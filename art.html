@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Известные изображения и иконы</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=GFS+Didot&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=PT+Mono&display=swap">
+<style>
+/* Layout: одна колонка-«синодик»: шапка с андреевским крестом и переключателем языка → схема → фильтр → карточки → источники */
+:root{
+  --bg:#f5f7fa; --paper:#ffffff; --ink:#14213a; --muted:#56637a; --line:#d7dee9;
+  --saltire:#1f4fa3; --saltire-soft:#e3ebf8; --gold:#a6761d; --warn:#8a5a00; --warn-bg:#fbf1dc;
+  --f-display:"Oranienbaum","PT Serif",Georgia,serif;
+  --f-body:"Alegreya Sans","PT Sans","Segoe UI",system-ui,sans-serif;
+  --f-data:"PT Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1524; --paper:#151e31; --ink:#e6ebf4; --muted:#9aa7bd; --line:#2a3650;
+  --saltire:#7ea6ec; --saltire-soft:#1c2a47; --gold:#d6a84d; --warn:#e7b85c; --warn-bg:#2b2412; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1524; --paper:#151e31; --ink:#e6ebf4; --muted:#9aa7bd; --line:#2a3650;
+  --saltire:#7ea6ec; --saltire-soft:#1c2a47; --gold:#d6a84d; --warn:#e7b85c; --warn-bg:#2b2412; color-scheme:dark}
+:root:lang(el){--f-display:"GFS Didot","Noto Serif",Georgia,serif; --f-data:ui-monospace,Menlo,"Noto Sans Mono",monospace}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+a{color:var(--saltire);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--saltire);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+
+.langbar{display:flex;justify-content:flex-end;gap:4px;padding-top:14px}
+.lang{font:500 13px var(--f-body);letter-spacing:.06em;padding:5px 11px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;cursor:pointer;min-width:44px}
+.lang[aria-pressed="true"]{background:var(--saltire);border-color:var(--saltire);color:var(--paper)}
+
+header.top{position:relative;padding-block:22px 28px;border-bottom:1px solid var(--line);overflow:hidden}
+header.top .hflag{position:absolute;right:0;top:20px;width:min(300px,34vw);pointer-events:none;filter:drop-shadow(0 6px 10px rgba(20,33,58,.22))}
+header.top:has(.hflag) .lede{max-width:min(62ch,calc(100% - 340px))}
+header.top .hflag svg{display:block;width:100%;height:auto}
+.side svg.flag{width:68px;height:auto;filter:drop-shadow(0 2px 3px rgba(20,33,58,.25))}
+.nophoto svg.flag{width:54px;height:auto;opacity:1}
+@media (max-width:700px){header.top:has(.hflag) .lede{max-width:62ch}header.top .hflag{position:static;width:140px;margin:0 0 10px auto}}
+.eyebrow{font-family:var(--f-data);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(34px,7vw,58px);line-height:1.05;margin-top:10px;max-width:16ch}
+.lede{max-width:62ch;color:var(--muted);margin:14px 0 0}
+.stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:22px;font-family:var(--f-data);font-size:14px}
+.stats b{font-family:var(--f-display);font-weight:400;font-size:28px;color:var(--saltire);margin-right:6px}
+
+section{margin-top:40px}
+h2{font-size:30px}
+.sub{color:var(--muted);margin:6px 0 16px;max-width:62ch}
+.mapbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.mapbox svg{display:block;width:100%;min-width:560px;height:auto}
+.mapbox{position:relative}.mp-dot{cursor:pointer}.mp-dot:hover .dv{r:4;fill-opacity:1}
+#mp-tip{position:absolute;z-index:5;pointer-events:none;background:var(--ink);color:var(--paper);font:500 13.5px var(--f-body);padding:5px 9px;border-radius:4px;max-width:260px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.mp-tog{display:inline-flex;gap:8px;align-items:center;font-size:15px;margin:0 0 10px;cursor:pointer}
+.map-note{font-size:13px;color:var(--muted);margin-top:8px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 4px}
+.chip{font:500 15px var(--f-body);padding:6px 14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--saltire);border-color:var(--saltire);color:var(--paper)}
+
+.list{display:grid;gap:22px;margin-top:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;display:grid;grid-template-columns:120px 1fr;overflow:hidden}
+.card .side{background:var(--saltire-soft);display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 8px;border-right:1px solid var(--line)}
+.num{font-family:var(--f-display);font-size:44px;line-height:1;color:var(--saltire)}
+.side svg{width:54px;height:54px}
+.coords{font-family:var(--f-data);font-size:11px;color:var(--muted);text-align:center;line-height:1.4}
+.body{padding:20px 22px 22px;min-width:0}
+.kind{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tag{font-family:var(--f-data);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px;border:1px solid var(--line);color:var(--muted)}
+.tag.on{border-color:var(--saltire);color:var(--saltire)}
+.tag.hist{border-color:var(--gold);color:var(--gold)}
+.card h3{font-size:27px;line-height:1.15}
+.place{color:var(--muted);margin:4px 0 14px}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:0 0 14px;font-size:15px}
+dl.facts dt{color:var(--muted)}
+dl.facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.gallery{display:grid;gap:10px;margin:0 0 16px}
+.gallery.multi{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ph{margin:0;min-width:0}
+.ph-frame{position:relative;display:block;aspect-ratio:3/2;max-width:100%;background:var(--saltire-soft);border-radius:4px;overflow:hidden}
+.ph-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-fail{display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:12px;font-size:14px;color:var(--saltire)}
+.ph-frame.fail img{display:none}.ph-frame.fail .ph-fail{display:flex}
+.ph figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.4}
+.ph-more{display:inline-block;font-size:14px;margin:-6px 0 16px}
+.nophoto{display:flex;gap:14px;align-items:flex-start;background:var(--saltire-soft);border-radius:4px;padding:14px 16px;margin:0 0 16px;font-size:14.5px}
+.nophoto svg{flex:none;width:34px;height:34px;opacity:.6}
+.nophoto p{margin:0 0 6px;color:var(--muted)}
+.np-links{display:flex;flex-wrap:wrap;gap:4px 16px}
+@media (max-width:620px){.gallery.multi{grid-template-columns:1fr}}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ch-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:16px 0 4px}
+.ch-controls input,.ch-controls select{font:400 16px var(--f-body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 12px;width:100%;min-width:0}
+.ch-controls input:focus-visible,.ch-controls select:focus-visible{outline:2px solid var(--saltire);outline-offset:1px}
+.ch-count{font-family:var(--f-data);font-size:13px;color:var(--muted);margin:12px 0 8px}
+.ch-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;border-top:1px solid var(--line)}
+.ch-list li{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);min-width:0}
+.ch-list .ty{font-family:var(--f-data);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--saltire);min-width:7.5em}
+.ch-list .ty.cath{color:var(--gold)}
+.ch-list .pl{font-size:16px;overflow-wrap:anywhere;min-width:0}
+.ch-list .rg{grid-column:2;font-size:13.5px;color:var(--muted)}
+.ch-links{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14.5px;margin:6px 0 0}
+@media (max-width:620px){.ch-controls{grid-template-columns:1fr}.ch-list{grid-template-columns:1fr}}
+.extra-p{margin:0 0 14px;max-width:62ch}
+.chron{list-style:none;padding:0;margin:0 0 14px;border-left:2px solid var(--saltire-soft)}
+.chron li{display:grid;grid-template-columns:5.2em 1fr;gap:10px;padding:3px 0 3px 12px;font-size:15.5px}
+.chron .y{font-family:var(--f-data);font-size:13px;color:var(--saltire);padding-top:3px;font-variant-numeric:tabular-nums}
+.note{background:var(--warn-bg);color:var(--ink);border-left:3px solid var(--warn);padding:10px 14px;font-size:15px;margin:0 0 14px;border-radius:0 4px 4px 0}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14.5px;border-top:1px dashed var(--line);padding-top:12px}
+.links span{font-family:var(--f-data);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);width:100%}
+.links .off::before{content:"● ";color:var(--saltire)}
+.links .unoff::before{content:"○ ";color:var(--muted)}
+.links .ph::before{content:"▣ ";color:var(--gold)}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:var(--muted);margin-top:8px}
+.extra{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px 22px}
+.extra ul{margin:8px 0 0;padding-left:20px}
+.extra li{margin:4px 0}
+.src{columns:2 280px;column-gap:28px;font-size:14.5px;padding-left:18px}
+.src li{break-inside:avoid;margin:0 0 6px}
+footer{margin-top:36px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+
+@media (max-width:620px){
+  .card{grid-template-columns:1fr}
+  .card .side{flex-direction:row;justify-content:flex-start;border-right:0;border-bottom:1px solid var(--line);padding:12px 18px;gap:14px}
+  .side svg{width:36px;height:36px}
+  .side svg.flag{width:54px;height:auto}
+  .num{font-size:34px}
+  .coords{text-align:left}
+  .body{padding:16px 16px 18px}
+  dl.facts{grid-template-columns:1fr;gap:0}
+  dl.facts dd{margin-bottom:6px}
+}
+
+.saint{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:24px;align-items:start}
+.saint p{margin:0 0 12px;max-width:62ch}
+.sa-facts{margin:0;background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:6px;padding:14px 18px;font-size:15px;display:grid;grid-template-columns:max-content 1fr;gap:6px 14px}
+.sa-facts dt{color:var(--muted)}.sa-facts dd{margin:0;min-width:0}
+@media (max-width:700px){.saint{grid-template-columns:1fr}}
+.art-list{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.art-list li{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:6px;padding:12px 16px;min-width:0}
+.art-list .ay{font-family:var(--f-data);font-size:12px;color:var(--gold);letter-spacing:.05em}
+.art-list h3{font-size:20px;line-height:1.2;margin:2px 0 2px}
+.art-list .aw{color:var(--muted);font-size:14.5px;margin:0 0 6px}
+.art-list p{margin:0;font-size:15px}
+@media (max-width:700px){.art-list{grid-template-columns:1fr}}
+/* золотые акценты */
+:root{--gold-hi:#d9b04a;--gold-soft:#f6ecd3}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--gold-soft:#2b2412}}
+:root[data-theme="dark"]{--gold-soft:#2b2412}
+header.top{border-bottom:0;position:relative}
+header.top::after,footer::before{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--gold) 0,var(--gold-hi) 35%,var(--gold) 70%,transparent);border-radius:2px}
+header.top::after{position:absolute;left:0;right:0;bottom:0}
+footer{border-top:0;position:relative;padding-top:0}
+footer::before{margin-bottom:14px;height:2px}
+.eyebrow{color:var(--gold)}
+h2{position:relative;padding-bottom:10px}
+h2::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold-hi))}
+.stats b{color:var(--gold)}
+.stats div:first-child b,.stats div:nth-child(2) b{color:var(--saltire)}
+.card{border-top:3px solid var(--gold)}
+.card .side{background:linear-gradient(180deg,var(--gold-soft),var(--saltire-soft) 70%)}
+.num{color:var(--gold)}
+.card h3{position:relative}
+.chip[aria-pressed="true"]{background:var(--saltire);border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft),0 0 0 3px var(--gold)}
+.lang[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft),0 0 0 3px var(--gold)}
+.chron{border-left-color:var(--gold-hi)}
+.chron .y{color:var(--gold)}
+.extra{border-top:3px solid var(--gold)}
+.ch-list li:hover{background:var(--gold-soft)}
+.ch-count{color:var(--gold)}
+.src li::marker{color:var(--gold)}
+a:hover{color:var(--gold)}
+.ph-frame{box-shadow:0 0 0 1px var(--gold-hi)}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .2s}.card:hover{border-color:var(--saltire);border-top-color:var(--gold-hi)}}
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}.back{display:inline-block;margin:18px 0 0;font-size:15px}</style>
+</head>
+<body>
+<div class="wrap">
+<div class="langbar" role="group" aria-label="Language">
+  <button class="lang" id="l-ru" data-l="ru" aria-pressed="true">RU</button>
+  <button class="lang" id="l-en" data-l="en" aria-pressed="false">EN</button>
+  <button class="lang" id="l-el" data-l="el" aria-pressed="false">EL</button>
+</div>
+<a class="back" id="back" href="./" data-i="backT"></a>
+<section aria-labelledby="art-h" id="art">
+  <h2 id="art-h" data-i="artH"></h2>
+  <p class="sub" data-i="artSub"></p>
+  <ul class="art-list" id="artList"></ul>
+  <p class="map-note" data-i="artNote"></p>
+  <p class="ch-links"><a href="https://commons.wikimedia.org/w/index.php?search=Andrew+the+Apostle+painting+icon" target="_blank" rel="noopener" data-i="artL1"></a> <a href="https://en.wikipedia.org/wiki/Andrew_the_Apostle" target="_blank" rel="noopener" data-i="artL2"></a> <a href="https://azbyka.ru/art/?p=1215" target="_blank" rel="noopener" data-i="artL3"></a></p>
+</section>
+<footer></footer>
+</div>
+<script>
+const UI={
+ru:{backT:"← На главную",title:"Известные изображения и иконы · Андреевские обители России",artH:"Известные изображения и иконы",artSub:"Андрей Первозванный на мозаиках, иконах и картинах: от византийского времени до барокко.",artNote:"Список составлен по доступным справочным источникам и не претендует на полноту. Русские иконы сюда пока не вошли: для них нужны отдельные проверенные данные о датировке и месте хранения. Изображения здесь не приведены; их можно найти по ссылкам.",artL1:"Изображения на Wikimedia Commons ↗",artL2:"Андрей Первозванный в искусстве (Wikipedia, англ.) ↗",artL3:"Гверчино «Святой Андрей, несущий свой крест» (Азбука) ↗"},
+en:{backT:"← Back to the main page",title:"Famous images and icons · Monasteries of St Andrew",artH:"Famous images and icons",artSub:"St Andrew in mosaics, icons and paintings, from the Byzantine period to the Baroque.",artNote:"The list is compiled from available reference sources and is not exhaustive. Russian icons are not included yet: they need separately verified data on dating and location. No images are reproduced here; follow the links to see them.",artL1:"Images on Wikimedia Commons ↗",artL2:"St Andrew in art (Wikipedia) ↗",artL3:"Guercino, “Saint Andrew Carrying His Cross” (Azbyka, in Russian) ↗"},
+el:{backT:"← Πίσω στην κεντρική σελίδα",title:"Γνωστές εικόνες · Μονές του Αγίου Ανδρέα",artH:"Γνωστές εικόνες και απεικονίσεις",artSub:"Ο Άγιος Ανδρέας σε ψηφιδωτά, εικόνες και πίνακες, από τη βυζαντινή περίοδο έως το μπαρόκ.",artNote:"Ο κατάλογος βασίζεται σε διαθέσιμες βιβλιογραφικές πηγές και δεν είναι εξαντλητικός. Οι ρωσικές εικόνες δεν περιλαμβάνονται ακόμη: χρειάζονται επαληθευμένα στοιχεία χρονολόγησης και τόπου φύλαξης. Δεν παρατίθενται εικόνες· δείτε τις μέσω των συνδέσμων.",artL1:"Εικόνες στο Wikimedia Commons ↗",artL2:"Ο Άγιος Ανδρέας στην τέχνη (Wikipedia) ↗",artL3:"Guercino, «Ο Άγιος Ανδρέας φέρνει τον σταυρό του» (Azbyka, ρωσικά) ↗"}
+};
+
+const L=(ru,en,el)=>({ru,en,el});
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ART=[
+["6th c.",L("Мозаика с апостолом Андреем","Mosaic of the Apostle Andrew","Ψηφιδωτό του Αποστόλου Ανδρέα"),L("Неизвестный мастер · базилика Сан-Витале, Равенна","Unknown artist · Basilica of San Vitale, Ravenna","Άγνωστος καλλιτέχνης · Βασιλική του Αγίου Βιταλίου, Ραβέννα"),L("Фрагмент византийской мозаики VI века с образом апостола.","A detail of a 6th-century Byzantine mosaic showing the apostle.","Λεπτομέρεια βυζαντινού ψηφιδωτού του 6ου αιώνα με τον απόστολο.")],
+["1426",L("«Святой Андрей»","Saint Andrew","«Άγιος Ανδρέας»"),L("Мазаччо · Музей Гетти, Лос-Анджелес","Masaccio · Getty Center, Los Angeles","Μαζάτσιο · Getty Center, Λος Άντζελες"),L("Темпера и золото; часть Пизанского полиптиха.","Tempera and gold leaf; once part of the Pisa Altarpiece.","Τέμπερα και φύλλο χρυσού· μέρος του Πολύπτυχου της Πίζας.")],
+["c. 1611",L("«Святой Андрей»","Saint Andrew","«Άγιος Ανδρέας»"),L("Питер Пауль Рубенс","Peter Paul Rubens","Πέτερ Πάουλ Ρούμπενς"),L("Портрет апостола кисти фламандского мастера барокко.","A portrait of the apostle by the Flemish Baroque master.","Προσωπογραφία του αποστόλου από τον φλαμανδό ζωγράφο του μπαρόκ.")],
+["1606–1607",L("«Распятие святого Андрея»","The Crucifixion of Saint Andrew","«Η Σταύρωση του Αγίου Ανδρέα»"),L("Караваджо · Кливлендский музей искусства","Caravaggio · Cleveland Museum of Art","Καραβάτζο · Μουσείο Τέχνης του Κλήβελαντ"),L("Апостол привязан верёвками к Х-образному кресту в Патрах; справа проконсул Эгей.","The apostle is bound with ropes to an X-shaped cross at Patras; the proconsul Aegeas stands at right.","Ο απόστολος δεμένος με σχοινιά σε Χ-σχήματος σταυρό στην Πάτρα· δεξιά ο ανθύπατος Αιγέας.")],
+["1628",L("«Мученичество святого Андрея»","The Martyrdom of Saint Andrew","«Το μαρτύριο του Αγίου Ανδρέα»"),L("Хусепе де Рибера · Музей изящных искусств, Будапешт","Jusepe de Ribera · Museum of Fine Arts, Budapest","Χοσέ ντε Ριμπέρα · Μουσείο Καλών Τεχνών, Βουδαπέστη"),L("Картина близка к реализму Караваджо; в Будапеште с 1871 года.","Close to Caravaggio's realism; in Budapest since 1871.","Κοντά στον ρεαλισμό του Καραβάτζο· στη Βουδαπέστη από το 1871.")],
+["1640–1692",L("Икона апостола Андрея","Icon of the Apostle Andrew","Εικόνα του Αποστόλου Ανδρέα"),L("Феодор Пулакис (критская школа)","Theodore Poulakis (Cretan school)","Θεόδωρος Πουλάκης (κρητική σχολή)"),L("Пример послевизантийской иконописи Крита.","An example of post-Byzantine Cretan icon painting.","Δείγμα μεταβυζαντινής κρητικής αγιογραφίας.")],
+["1650s",L("«Святой Андрей, несущий свой крест»","Saint Andrew Carrying His Cross","«Ο Άγιος Ανδρέας φέρνει τον σταυρό του»"),L("Гверчино · Болонья","Guercino · Bologna","Γκουερτσίνο · Μπολώνια"),L("Седобородый апостол с крестом на плече, взгляд обращён к небу.","A grey-bearded apostle with the cross on his shoulder, his gaze raised to heaven.","Γενειοφόρος απόστολος με τον σταυρό στον ώμο, με το βλέμμα στραμμένο στον ουρανό.")],
+["1675–1682",L("«Мученичество святого Андрея»","The Martyrdom of Saint Andrew","«Το μαρτύριο του Αγίου Ανδρέα»"),L("Бартоломе Мурильо · Прадо, Мадрид","Bartolomé Murillo · Museo del Prado, Madrid","Μπαρτολομέ Μουρίγιο · Μουσείο του Πράδο, Μαδρίτη"),L("Драматическая трактовка, восходящая к Рубенсу.","A dramatic treatment drawing on Rubens.","Δραματική απόδοση με επιρροές από τον Ρούμπενς.")],
+["1687",L("«Мученичество святого Андрея»","The Martyrdom of Saint Andrew","«Το μαρτύριο του Αγίου Ανδρέα»"),L("Маттиа Прети · церковь св. Андрея, Лука, Мальта","Mattia Preti · Church of St Andrew, Luqa, Malta","Ματία Πρέτι · Ναός Αγίου Ανδρέα, Λούκα, Μάλτα"),L("Образ главного алтаря церкви.","The painting on the church's main altar.","Ο πίνακας του κυρίως ιερού του ναού.")]
+];
+
+let lang="ru";
+function render(){
+  const t=UI[lang];document.documentElement.lang=lang;document.title=t.title;
+  document.querySelectorAll("[data-i]").forEach(e=>{e.textContent=t[e.dataset.i]});
+  document.getElementById("back").href="./#"+lang;
+  document.getElementById("artList").innerHTML=ART.map(([y,n,w,c])=>`<li><div class="ay">${esc(y)}</div><h3>${esc(n[lang])}</h3><p class="aw">${esc(w[lang])}</p><p>${esc(c[lang])}</p></li>`).join("");
+  document.querySelectorAll(".lang").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
+}
+document.querySelectorAll(".lang").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.l;try{localStorage.setItem("andr-lang",lang)}catch(e){}history.replaceState(null,"","#"+lang);render()}));
+(function(){const h=(location.hash||"").slice(1);if(UI[h])lang=h;else{try{const v=localStorage.getItem("andr-lang");if(UI[v])lang=v}catch(e){}}render()})();
+</script>
+</body>
+</html>
