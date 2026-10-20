@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Монастыри, скиты и пустыни России во имя апостола Андрея Первозванного / Monasteries of St Andrew in Russia / Μονές του Αγίου Ανδρέα στη Ρωσία">
+<title>Андреевские обители России</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=GFS+Didot&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=PT+Mono&display=swap">
+<style>
+/* Layout: одна колонка-«синодик»: шапка с андреевским крестом и переключателем языка → схема → фильтр → карточки → источники */
+:root{
+  --bg:#f5f7fa; --paper:#ffffff; --ink:#14213a; --muted:#56637a; --line:#d7dee9;
+  --saltire:#1f4fa3; --saltire-soft:#e3ebf8; --gold:#a6761d; --warn:#8a5a00; --warn-bg:#fbf1dc;
+  --f-display:"Oranienbaum","PT Serif",Georgia,serif;
+  --f-body:"Alegreya Sans","PT Sans","Segoe UI",system-ui,sans-serif;
+  --f-data:"PT Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1524; --paper:#151e31; --ink:#e6ebf4; --muted:#9aa7bd; --line:#2a3650;
+  --saltire:#7ea6ec; --saltire-soft:#1c2a47; --gold:#d6a84d; --warn:#e7b85c; --warn-bg:#2b2412; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1524; --paper:#151e31; --ink:#e6ebf4; --muted:#9aa7bd; --line:#2a3650;
+  --saltire:#7ea6ec; --saltire-soft:#1c2a47; --gold:#d6a84d; --warn:#e7b85c; --warn-bg:#2b2412; color-scheme:dark}
+:root:lang(el){--f-display:"GFS Didot","Noto Serif",Georgia,serif; --f-data:ui-monospace,Menlo,"Noto Sans Mono",monospace}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+a{color:var(--saltire);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--saltire);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0}
+
+.langbar{display:flex;justify-content:flex-end;gap:4px;padding-top:14px}
+.lang{font:500 13px var(--f-body);letter-spacing:.06em;padding:5px 11px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;cursor:pointer;min-width:44px}
+.lang[aria-pressed="true"]{background:var(--saltire);border-color:var(--saltire);color:var(--paper)}
+
+header.top{position:relative;padding-block:22px 28px;border-bottom:1px solid var(--line);overflow:hidden}
+header.top svg.x{position:absolute;right:-20px;top:-10px;width:220px;height:220px;opacity:.13;pointer-events:none}
+.eyebrow{font-family:var(--f-data);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(34px,7vw,58px);line-height:1.05;margin-top:10px;max-width:16ch}
+.lede{max-width:62ch;color:var(--muted);margin:14px 0 0}
+.stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:22px;font-family:var(--f-data);font-size:14px}
+.stats b{font-family:var(--f-display);font-weight:400;font-size:28px;color:var(--saltire);margin-right:6px}
+
+section{margin-top:40px}
+h2{font-size:30px}
+.sub{color:var(--muted);margin:6px 0 16px;max-width:62ch}
+.mapbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+.mapbox svg{display:block;width:100%;min-width:560px;height:auto}
+.map-note{font-size:13px;color:var(--muted);margin-top:8px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 4px}
+.chip{font:500 15px var(--f-body);padding:6px 14px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--saltire);border-color:var(--saltire);color:var(--paper)}
+
+.list{display:grid;gap:22px;margin-top:18px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;display:grid;grid-template-columns:120px 1fr;overflow:hidden}
+.card .side{background:var(--saltire-soft);display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 8px;border-right:1px solid var(--line)}
+.num{font-family:var(--f-display);font-size:44px;line-height:1;color:var(--saltire)}
+.side svg{width:54px;height:54px}
+.coords{font-family:var(--f-data);font-size:11px;color:var(--muted);text-align:center;line-height:1.4}
+.body{padding:20px 22px 22px;min-width:0}
+.kind{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tag{font-family:var(--f-data);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px;border:1px solid var(--line);color:var(--muted)}
+.tag.on{border-color:var(--saltire);color:var(--saltire)}
+.tag.hist{border-color:var(--gold);color:var(--gold)}
+.card h3{font-size:27px;line-height:1.15}
+.place{color:var(--muted);margin:4px 0 14px}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:0 0 14px;font-size:15px}
+dl.facts dt{color:var(--muted)}
+dl.facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.extra-p{margin:0 0 14px;max-width:62ch}
+.chron{list-style:none;padding:0;margin:0 0 14px;border-left:2px solid var(--saltire-soft)}
+.chron li{display:grid;grid-template-columns:5.2em 1fr;gap:10px;padding:3px 0 3px 12px;font-size:15.5px}
+.chron .y{font-family:var(--f-data);font-size:13px;color:var(--saltire);padding-top:3px;font-variant-numeric:tabular-nums}
+.note{background:var(--warn-bg);color:var(--ink);border-left:3px solid var(--warn);padding:10px 14px;font-size:15px;margin:0 0 14px;border-radius:0 4px 4px 0}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14.5px;border-top:1px dashed var(--line);padding-top:12px}
+.links span{font-family:var(--f-data);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);width:100%}
+.links .off::before{content:"● ";color:var(--saltire)}
+.links .unoff::before{content:"○ ";color:var(--muted)}
+.links .ph::before{content:"▣ ";color:var(--gold)}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:var(--muted);margin-top:8px}
+.extra{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px 22px}
+.extra ul{margin:8px 0 0;padding-left:20px}
+.extra li{margin:4px 0}
+.src{columns:2 280px;column-gap:28px;font-size:14.5px;padding-left:18px}
+.src li{break-inside:avoid;margin:0 0 6px}
+footer{margin-top:36px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+
+@media (max-width:620px){
+  .card{grid-template-columns:1fr}
+  .card .side{flex-direction:row;justify-content:flex-start;border-right:0;border-bottom:1px solid var(--line);padding:12px 18px;gap:14px}
+  .side svg{width:36px;height:36px}
+  .num{font-size:34px}
+  .coords{text-align:left}
+  .body{padding:16px 16px 18px}
+  dl.facts{grid-template-columns:1fr;gap:0}
+  dl.facts dd{margin-bottom:6px}
+}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .2s}.card:hover{border-color:var(--saltire)}}
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="langbar" role="group" aria-label="Language">
+  <button class="lang" id="l-ru" data-l="ru" aria-pressed="true">RU</button>
+  <button class="lang" id="l-en" data-l="en" aria-pressed="false">EN</button>
+  <button class="lang" id="l-el" data-l="el" aria-pressed="false">EL</button>
+</div>
+<header class="top">
+  <svg class="x" viewBox="0 0 100 100" aria-hidden="true"><path d="M8 0 L50 42 L92 0 L100 8 L58 50 L100 92 L92 100 L50 58 L8 100 L0 92 L42 50 L0 8Z" fill="var(--saltire)"/></svg>
+  <div class="eyebrow" data-i="eyebrow"></div>
+  <h1 data-i="h1"></h1>
+  <p class="lede" data-i="lede"></p>
+  <div class="stats">
+    <div><b>3</b><span data-i="st1"></span></div>
+    <div><b>3</b><span data-i="st2"></span></div>
+    <div><b>1</b><span data-i="st3"></span></div>
+    <div><b>1</b><span data-i="st4"></span></div>
+  </div>
+</header>
+
+<section aria-labelledby="map-h">
+  <h2 id="map-h" data-i="mapH"></h2>
+  <p class="sub" data-i="mapSub"></p>
+  <div class="mapbox"><svg id="map" viewBox="0 0 900 380" role="img"></svg></div>
+  <p class="map-note" data-i="mapNote"></p>
+</section>
+
+<section aria-labelledby="list-h">
+  <h2 id="list-h" data-i="listH"></h2>
+  <div class="filters" role="group">
+    <button class="chip" id="f-all" data-f="all" aria-pressed="true" data-i="fAll"></button>
+    <button class="chip" id="f-mon" data-f="mon" aria-pressed="false" data-i="fMon"></button>
+    <button class="chip" id="f-skit" data-f="skit" aria-pressed="false" data-i="fSkit"></button>
+    <button class="chip" id="f-hist" data-f="hist" aria-pressed="false" data-i="fHist"></button>
+  </div>
+  <div class="legend"><span data-i="lg1"></span><span data-i="lg2"></span><span data-i="lg3"></span></div>
+  <div class="list" id="list"></div>
+</section>
+
+<section aria-labelledby="ex-h">
+  <h2 id="ex-h" data-i="exH"></h2>
+  <div class="extra"><p style="margin:0" data-i="exP"></p><ul id="exList"></ul></div>
+</section>
+
+<section aria-labelledby="src-h">
+  <h2 id="src-h" data-i="srcH"></h2>
+  <p class="sub" data-i="srcSub"></p>
+  <ol class="src">
+    <li><a href="https://sprav.moseparh.ru/org/516" target="_blank" rel="noopener">Справочник Московской епархии: Андреевский монастырь</a></li>
+    <li><a href="https://monasterium.ru/monastyri/monastery/andreevskiy-stavropigialnyy-muzhskoy-monastyr/" target="_blank" rel="noopener">«Монастырский вестник» (Синодальный отдел по монастырям)</a></li>
+    <li><a href="https://m.pravenc.ru/text/115196.html" target="_blank" rel="noopener">Православная энциклопедия: Андреевский монастырь в Пленницах</a></li>
+    <li><a href="https://drevo-info.ru/articles/13678975" target="_blank" rel="noopener">Энциклопедия «Древо»</a></li>
+    <li><a href="https://andreevsky-monastery.ru/blog/detail/andreevskiy-monastyr-v-moskve/" target="_blank" rel="noopener">Официальный сайт Андреевского монастыря</a></li>
+    <li><a href="https://www.culture.ru/objects/1665/andreevskii-stavropigialnyi-muzhskoi-monastyr-v-moskve" target="_blank" rel="noopener">Культура.РФ</a></li>
+    <li><a href="https://monasterium.ru/monastyri/monastery/andreevskiy-muzhskoy-monastyr-s-andreevka-/" target="_blank" rel="noopener">«Монастырский вестник»: Андреевка</a></li>
+    <li><a href="https://travel.orb.ru/chem-zanyatsya/attractions/monastyri-i-khramy/svyato-andreevskiy-muzhskoy-monastyr/" target="_blank" rel="noopener">Туристический портал Оренбуржья</a></li>
+    <li><a href="https://geometki.com/places/65cfafbc474ca" target="_blank" rel="noopener">Геометки: Свято-Андреевский монастырь</a></li>
+    <li><a href="https://monasterium.ru/monastyri/monastery/andreevskiy-muzhskoy-monastyr-v-g-mirnyy/" target="_blank" rel="noopener">«Монастырский вестник»: Мирный</a></li>
+    <li><a href="https://azbyka.ru/palomnik/Андреевский_мужской_монастырь_(Мирный)" target="_blank" rel="noopener">Азбука паломника: Мирный</a></li>
+    <li><a href="https://ru.ruwiki.ru/wiki/Андреевский_скит_Соловецкого_монастыря" target="_blank" rel="noopener">Рувики: Андреевский скит Соловецкого монастыря</a></li>
+    <li><a href="https://tonkosti.ru/Большой_Заяцкий_остров" target="_blank" rel="noopener">Тонкости туризма: Большой Заяцкий остров</a></li>
+    <li><a href="https://azbyka.ru/palomnik/Скит_апостола_Андрея_Первозванного_(Агафонов_Луг)" target="_blank" rel="noopener">Азбука паломника: скит на Агафоновом лугу</a></li>
+    <li><a href="https://azbyka.ru/palomnik/Андрей_Первозванный,_апостол" target="_blank" rel="noopener">Азбука паломника: храмы и обители с престолом апостола Андрея</a></li>
+    <li><a href="https://www.monasterium.ru/monastyri/monastery/svyato-andreevskiy-muzhskoy-monastyr-s-pervozvanovka-rovenkovskoy-eparkhii/" target="_blank" rel="noopener">«Монастырский вестник»: Первозвановка</a></li>
+    <li><a href="https://www.pravenc.ru/text/115366.html" target="_blank" rel="noopener">Православная энциклопедия: Андрея Первозванного монастырь (Луганская обл.)</a></li>
+    <li><a href="https://www.citywalls.ru/photo479382.html" target="_blank" rel="noopener">Citywalls: подворье Андреевского скита в Петербурге</a></li>
+    <li><a href="https://azbyka.ru/otechnik/Istorija_Tserkvi/russkie-obiteli-afona-i-elladskaja-tserkov-v-20-veke/3" target="_blank" rel="noopener">М. В. Шкаровский. Русские обители Афона в XX веке</a></li>
+    <li><a href="https://sobory.ru/mapsearch/?altar=28" target="_blank" rel="noopener">Sobory.ru: все храмы Андрея Первозванного на карте</a></li>
+  </ol>
+</section>
+
+<footer data-i="footer"></footer>
+</div>
+
+<script>
+const UI={
+ru:{title:"Андреевские обители России",eyebrow:"Свод · память 30 ноября / 13 декабря",h1:"Андреевские обители России",
+ lede:"Монастыри, скиты и пустыни, посвящённые апостолу Андрею Первозванному или носящие его имя. Данные сведены из церковных справочников, официальных сайтов обителей, «Православной энциклопедии» и путеводителей. Состояние на октябрь 2026 года.",
+ st1:"действующих монастыря",st2:"скита и пустыни",st3:"на спорной территории",st4:"историческое подворье",
+ mapH:"Где находятся",mapSub:"Схема по географическим координатам (широта и долгота), без государственных границ. Номера совпадают с карточками ниже.",mapAria:"Схема расположения обителей",
+ mapNote:"Точки в Санкт-Петербурге, на Агафоновом лугу и на Валааме лежат рядом, поэтому подписи разнесены.",arctic:"Северный полярный круг",
+ listH:"Обители",fAll:"Все",fMon:"Монастыри",fSkit:"Скиты и пустыни",fHist:"Исторические",
+ lg1:"● официальный источник",lg2:"○ неофициальный / справочный",lg3:"▣ фотогалерея",linksH:"Источники и фото",
+ exH:"Что не вошло в свод",exP:"Свод включает только обители, у которых Андрей Первозванный в имени или в главном посвящении. Не включены:",
+ ex:["монастыри иного посвящения, где есть отдельный Андреевский храм (например, надвратная церковь Андрея Первозванного Благовещенского монастыря в Нижнем Новгороде);","приходские храмы и соборы апостола Андрея, которых по России несколько сотен («Народный каталог православной архитектуры» насчитывает их свыше 330);","зарубежные обители: русский Андреевский скит на Афоне (с 1992 года греческий) и его подворья в Стамбуле и Одессе."],
+ srcH:"Источники",srcSub:"Источники русскоязычные; названия даны в оригинале.",
+ footer:"Сведения о настоятелях, адресах и телефонах меняются; перед поездкой сверяйтесь с официальным сайтом обители или епархии. Фотографии на этой странице не размещены: они принадлежат авторам и собраны по ссылкам «▣» в каждой карточке.",
+ N:"с.ш.",E:"в.д."},
+en:{title:"Monasteries of St Andrew in Russia",eyebrow:"Directory · feast 30 November / 13 December",h1:"Monasteries of St Andrew in Russia",
+ lede:"Monasteries, sketes and hermitages dedicated to the Apostle Andrew the First-Called or bearing his name. Compiled from church directories, the monasteries' own websites, the Orthodox Encyclopedia and travel guides. Current as of October 2026.",
+ st1:"active monasteries",st2:"sketes and hermitages",st3:"in a disputed territory",st4:"historic metochion",
+ mapH:"Where they are",mapSub:"A schematic plotted by latitude and longitude, without state borders. Numbers match the cards below.",mapAria:"Location schematic",
+ mapNote:"St Petersburg, Agafonov Lug and Valaam lie close together, so their labels are spread apart.",arctic:"Arctic Circle",
+ listH:"Monasteries",fAll:"All",fMon:"Monasteries",fSkit:"Sketes and hermitages",fHist:"Historic",
+ lg1:"● official source",lg2:"○ unofficial / reference",lg3:"▣ photo gallery",linksH:"Sources and photos",
+ exH:"Not included",exP:"The directory lists only communities whose name or main dedication is to St Andrew the First-Called. Not included:",
+ ex:["monasteries with another dedication that contain a separate church of St Andrew (for example, the gate church of the Annunciation Monastery in Nizhny Novgorod);","parish churches and cathedrals of St Andrew, of which Russia has several hundred (the People's Catalogue of Orthodox Architecture lists more than 330);","communities abroad: the Russian St Andrew's Skete on Mount Athos (Greek since 1992) and its metochia in Istanbul and Odesa."],
+ srcH:"Sources",srcSub:"All sources are in Russian; titles are given in the original.",
+ footer:"Abbots, addresses and phone numbers change; check the monastery's or diocese's official website before a visit. No photographs are hosted on this page: they belong to their authors and are linked under ▣ in each card.",
+ N:"N",E:"E"},
+el:{title:"Μονές του Αγίου Ανδρέα στη Ρωσία",eyebrow:"Κατάλογος · μνήμη 30 Νοεμβρίου / 13 Δεκεμβρίου",h1:"Μονές του Αγίου Ανδρέα στη Ρωσία",
+ lede:"Μονές, σκήτες και ερημητήρια αφιερωμένα στον Απόστολο Ανδρέα τον Πρωτόκλητο ή που φέρουν το όνομά του. Τα στοιχεία προέρχονται από εκκλησιαστικούς καταλόγους, τους επίσημους ιστότοπους των μονών, την Ορθόδοξη Εγκυκλοπαίδεια και ταξιδιωτικούς οδηγούς. Ενημέρωση: Οκτώβριος 2026.",
+ st1:"εν λειτουργία μονές",st2:"σκήτες και ερημητήρια",st3:"σε αμφισβητούμενη περιοχή",st4:"ιστορικό μετόχι",
+ mapH:"Πού βρίσκονται",mapSub:"Σχέδιο με βάση το γεωγραφικό πλάτος και μήκος, χωρίς κρατικά σύνορα. Οι αριθμοί αντιστοιχούν στις κάρτες παρακάτω.",mapAria:"Σχέδιο θέσεων",
+ mapNote:"Η Αγία Πετρούπολη, το Αγκάφονοφ Λουγκ και το Βαλαάμ βρίσκονται κοντά, γι' αυτό οι ετικέτες είναι μετατοπισμένες.",arctic:"Αρκτικός Κύκλος",
+ listH:"Μονές",fAll:"Όλες",fMon:"Μονές",fSkit:"Σκήτες και ερημητήρια",fHist:"Ιστορικά",
+ lg1:"● επίσημη πηγή",lg2:"○ ανεπίσημη / βοηθητική",lg3:"▣ φωτογραφίες",linksH:"Πηγές και φωτογραφίες",
+ exH:"Τι δεν περιλαμβάνεται",exP:"Ο κατάλογος περιλαμβάνει μόνο μονές που φέρουν το όνομα του Αγίου Ανδρέα ή είναι κυρίως αφιερωμένες σε αυτόν. Δεν περιλαμβάνονται:",
+ ex:["μονές με άλλη αφιέρωση που έχουν ξεχωριστό ναό του Αγίου Ανδρέα (π.χ. ο ναός πάνω από την πύλη της Μονής του Ευαγγελισμού στο Νίζνι Νόβγκοροντ)·","ενοριακοί ναοί και καθεδρικοί του Αποστόλου Ανδρέα, που στη Ρωσία είναι εκατοντάδες (ο Λαϊκός Κατάλογος Ορθόδοξης Αρχιτεκτονικής καταγράφει πάνω από 330)·","μονές στο εξωτερικό: η ρωσική Σκήτη του Αγίου Ανδρέα στο Άγιον Όρος (ελληνική από το 1992) και τα μετόχιά της στην Κωνσταντινούπολη και την Οδησσό."],
+ srcH:"Πηγές",srcSub:"Όλες οι πηγές είναι στα ρωσικά· οι τίτλοι δίνονται στο πρωτότυπο.",
+ footer:"Τα στοιχεία για ηγουμένους, διευθύνσεις και τηλέφωνα αλλάζουν· πριν από την επίσκεψη ελέγξτε τον επίσημο ιστότοπο της μονής ή της επαρχίας. Η σελίδα δεν φιλοξενεί φωτογραφίες: ανήκουν στους δημιουργούς τους και παρατίθενται ως σύνδεσμοι ▣ σε κάθε κάρτα.",
+ N:"Β",E:"Α"}
+};
+
+const L=(ru,en,el)=>({ru,en,el});
+const DATA=[
+{n:1,cat:"mon",lat:55.7119,lon:37.5752,
+ lab:L("Москва","Moscow","Μόσχα"),
+ kind:[L("Мужской","Male","Ανδρική"),L("Ставропигиальный","Stauropegial","Σταυροπηγιακή"),{...L("Действующий","Active","Εν λειτουργία"),on:1}],
+ name:L("Андреевский ставропигиальный мужской монастырь","St Andrew's Stauropegial Monastery","Σταυροπηγιακή Ανδρική Μονή του Αγίου Ανδρέα"),
+ place:L("Москва, у подножия Воробьёвых гор (урочище Пленницы)","Moscow, at the foot of the Sparrow Hills (the Plennitsy area)","Μόσχα, στους πρόποδες των Λόφων των Σπουργιτιών (περιοχή Πλέννιτσι)"),
+ facts:{
+ ru:[["Подчинение","Патриаршая ставропигия"],["Адрес","119334, Москва, Андреевская наб., 2"],["Телефон","+7 (495) 135-81-15, +7 (963) 770-10-30"],["Наместник","игумен Дионисий (Шлёнов)"],["Храмы","Андрея Стратилата (надвратный, 1675); Воскресения Словущего (1689); Иоанна Богослова и Архангела Михаила (в колокольне)"],["Престолы","ап. Андрея Первозванного 30 ноября / 13 декабря; вмч. Феодора Стратилата; Архангела Михаила 19 сентября и 21 ноября"],["При монастыре","Синодальная библиотека, Синодальный отдел по взаимоотношениям Церкви с обществом и СМИ, Учебный комитет, телеканал «Союз», «Школа при Андреевском монастыре»"]],
+ en:[["Jurisdiction","Patriarchal stauropegion"],["Address","Andreevskaya nab. 2, Moscow 119334"],["Phone","+7 (495) 135-81-15, +7 (963) 770-10-30"],["Abbot","Hegumen Dionisy (Shlyonov)"],["Churches","St Andrew Stratelates (gate church, 1675); Resurrection of Christ (1689); St John the Theologian and Archangel Michael (in the bell tower)"],["Feasts","Apostle Andrew the First-Called 30 Nov / 13 Dec; Great Martyr Theodore Stratelates; Archangel Michael 19 Sept and 21 Nov"],["Also on site","Synodal Library, Synodal Department for Church–Society and Media Relations, Educational Committee, Soyuz TV channel, the Andreevsky Monastery School"]],
+ el:[["Υπαγωγή","Πατριαρχικό σταυροπήγιο"],["Διεύθυνση","Andreevskaya nab. 2, Μόσχα 119334"],["Τηλέφωνο","+7 (495) 135-81-15, +7 (963) 770-10-30"],["Ηγούμενος","Ηγούμενος Διονύσιος (Σλιόνοφ)"],["Ναοί","Αγίου Ανδρέα του Στρατηλάτη (πάνω από την πύλη, 1675)· Αναστάσεως του Χριστού (1689)· Αγίου Ιωάννου του Θεολόγου και Αρχαγγέλου Μιχαήλ (στο καμπαναριό)"],["Πανηγύρεις","Απόστολος Ανδρέας ο Πρωτόκλητος 30 Νοε / 13 Δεκ· Μεγαλομάρτυς Θεόδωρος ο Στρατηλάτης· Αρχάγγελος Μιχαήλ 19 Σεπτ και 21 Νοε"],["Στη μονή","Συνοδική Βιβλιοθήκη, Συνοδικό Τμήμα σχέσεων Εκκλησίας–κοινωνίας και ΜΜΕ, Εκπαιδευτική Επιτροπή, τηλεοπτικό κανάλι «Σογιούζ», σχολείο της μονής"]]},
+ chron:{
+ ru:[["XIII в.","По преданию, здесь возникла Преображенская пустынь"],["1591","Деревянный храм Андрея Стратилата в память избавления Москвы от хана Казы-Гирея"],["1648","Боярин Фёдор Ртищев устраивает монастырь с «Учительным братством»"],["1652","Открыто училище; Епифаний Славинецкий в стихах посвящает обитель апостолу Андрею Первозванному"],["1682","Монастырь приписан к Заиконоспасскому; братство легло в основу Славяно-греко-латинской академии"],["1724","Первое упразднение; в 1730 возобновлён"],["1764–1765","Окончательно упразднён, храмы стали приходскими, позже богадельня"],["1923","Закрыт храм Андрея Стратилата"],["1991","Открыто Патриаршее подворье"],["1996","Комплекс передан Церкви в бессрочное пользование"],["16.07.2013","Решением Синода подворье преобразовано в монастырь"]],
+ en:[["13th c.","According to tradition, a Transfiguration hermitage arose here"],["1591","Wooden church of St Andrew Stratelates built in thanks for Moscow's deliverance from Khan Kazy-Girey"],["1648","Boyar Fyodor Rtishchev founds a monastery with a learned 'Teaching Brotherhood'"],["1652","A school opens; in verse, Epiphanius Slavinetsky dedicates the house to the Apostle Andrew the First-Called"],["1682","Attached to the Zaikonospassky Monastery; the brotherhood becomes the core of the Slavonic-Greek-Latin Academy"],["1724","First closure; restored in 1730"],["1764–1765","Closed for good; churches become parish churches, later an almshouse"],["1923","Church of St Andrew Stratelates closed"],["1991","Patriarchal metochion opened"],["1996","Complex handed over to the Church for indefinite use"],["16.07.2013","The Holy Synod turns the metochion back into a monastery"]],
+ el:[["13ος αι.","Κατά την παράδοση, εδώ ιδρύθηκε ερημητήριο της Μεταμορφώσεως"],["1591","Ξύλινος ναός του Αγίου Ανδρέα του Στρατηλάτη, σε ανάμνηση της σωτηρίας της Μόσχας από τον χάνο Καζί-Γκιρέι"],["1648","Ο βογιάρος Φιόντορ Ρτίστσεφ ιδρύει μονή με λόγια «Διδακτική Αδελφότητα»"],["1652","Ιδρύεται σχολή· ο Επιφάνιος Σλαβινέτσκι αφιερώνει με στίχους τη μονή στον Απόστολο Ανδρέα τον Πρωτόκλητο"],["1682","Η μονή προσαρτάται στη Μονή Ζαϊκονοσπάσκι· η αδελφότητα γίνεται ο πυρήνας της Σλαβοελληνολατινικής Ακαδημίας"],["1724","Πρώτη κατάργηση· επανιδρύεται το 1730"],["1764–1765","Οριστική κατάργηση· οι ναοί γίνονται ενοριακοί, αργότερα γηροκομείο"],["1923","Κλείνει ο ναός του Αγίου Ανδρέα του Στρατηλάτη"],["1991","Ιδρύεται πατριαρχικό μετόχι"],["1996","Το συγκρότημα παραχωρείται στην Εκκλησία επ' αόριστον"],["16.07.2013","Η Ιερά Σύνοδος μετατρέπει το μετόχι ξανά σε μονή"]]},
+ note:L("Двойное посвящение. Официальный справочник Московской епархии выводит имя монастыря от надвратного храма мученика Андрея Стратилата. «Православная энциклопедия» и монастырские справочники указывают, что в 1652 году обитель была посвящена апостолу Андрею Первозванному, и его память значится среди престольных праздников.",
+  "Dual dedication. The official Moscow diocesan directory derives the monastery's name from the gate church of the martyr Andrew Stratelates. The Orthodox Encyclopedia and monastery directories state that in 1652 the house was dedicated to the Apostle Andrew the First-Called, and his feast is among its patronal feasts.",
+  "Διπλή αφιέρωση. Ο επίσημος κατάλογος της Επαρχίας Μόσχας συνδέει το όνομα της μονής με τον ναό του μάρτυρα Ανδρέα του Στρατηλάτη. Η Ορθόδοξη Εγκυκλοπαίδεια και οι κατάλογοι μονών αναφέρουν ότι το 1652 η μονή αφιερώθηκε στον Απόστολο Ανδρέα τον Πρωτόκλητο, και η μνήμη του συγκαταλέγεται στις πανηγύρεις της."),
+ links:[["off",L("Официальный сайт","Official website","Επίσημος ιστότοπος"),"https://andreevsky-monastery.ru/blog/detail/andreevskiy-monastyr-v-moskve/"],["off",L("Справочник Московской епархии","Moscow diocesan directory","Κατάλογος Επαρχίας Μόσχας"),"https://sprav.moseparh.ru/org/516"],["off",L("«Монастырский вестник»","Monastery Herald","«Μοναστηριακός Κήρυκας»"),"https://monasterium.ru/monastyri/monastery/andreevskiy-stavropigialnyy-muzhskoy-monastyr/"],["unoff",L("Православная энциклопедия","Orthodox Encyclopedia","Ορθόδοξη Εγκυκλοπαίδεια"),"https://m.pravenc.ru/text/115196.html"],["unoff",L("Древо","Drevo encyclopedia","Εγκυκλοπαίδεια «Δρέβο»"),"https://drevo-info.ru/articles/13678975"],["unoff",L("Википедия","Wikipedia (ru)","Βικιπαίδεια (ru)"),"https://ru.wikipedia.org/wiki/Андреевский_монастырь_(Москва)"],["ph",L("Фото: Культура.РФ","Photos: Kultura.RF","Φωτογραφίες: Kultura.RF"),"https://www.culture.ru/objects/1665/andreevskii-stavropigialnyi-muzhskoi-monastyr-v-moskve"],["ph",L("Фото и история: sobory.ru","Photos and history: sobory.ru","Φωτογραφίες και ιστορία: sobory.ru"),"https://sobory.ru/article/?object=04622"]]},
+
+{n:2,cat:"mon",lat:51.9327,lon:56.6392,
+ lab:L("Андреевка","Andreevka","Αντρέεφκα"),
+ kind:[L("Мужской","Male","Ανδρική"),L("Епархиальный","Diocesan","Επαρχιακή"),{...L("Действующий","Active","Εν λειτουργία"),on:1}],
+ name:L("Свято-Андреевский мужской монастырь","Holy St Andrew's Monastery","Ιερά Ανδρική Μονή Αγίου Ανδρέα"),
+ place:L("Село Андреевка, Саракташский район, Оренбургская область","Andreevka village, Saraktash District, Orenburg Region","Χωριό Αντρέεφκα, περιφέρεια Σαρακτάς, περιοχή Όρενμπουργκ"),
+ facts:{
+ ru:[["Епархия","Оренбургская"],["Адрес","Оренбургская обл., Саракташский р-н, с. Андреевка, Школьная ул., 2"],["Телефон","+7 (35333) 2-53-45"],["Почта","andr_monastir@mail.ru"],["Основатель","схиархимандрит Серафим (Томин)"],["Храмы","Михаила Архангела (строился с 1898 года на средства Михаила Чистозвонова); домовый храм апостола Андрея Первозванного (1997)"],["Подворье","домовый храм вмч. Пантелеимона в Оренбурге"],["Устав","строгий, по образцу афонского; богослужебный круг не прерывается"]],
+ en:[["Diocese","Orenburg"],["Address","Shkolnaya ul. 2, Andreevka, Saraktash District, Orenburg Region"],["Phone","+7 (35333) 2-53-45"],["Email","andr_monastir@mail.ru"],["Founder","Schema-archimandrite Serafim (Tomin)"],["Churches","Archangel Michael (begun 1898, funded by Mikhail Chistozvonov); house chapel of the Apostle Andrew the First-Called (1997)"],["Metochion","house church of the Great Martyr Panteleimon in Orenburg"],["Rule","strict, modelled on Mount Athos; the daily cycle of services is never interrupted"]],
+ el:[["Επαρχία","Όρενμπουργκ"],["Διεύθυνση","Shkolnaya ul. 2, Αντρέεφκα, περιφέρεια Σαρακτάς, περιοχή Όρενμπουργκ"],["Τηλέφωνο","+7 (35333) 2-53-45"],["Email","andr_monastir@mail.ru"],["Κτήτορας","Μεγαλόσχημος αρχιμανδρίτης Σεραφείμ (Τόμιν)"],["Ναοί","Αρχαγγέλου Μιχαήλ (ανεγέρθη από το 1898 με δαπάνη του Μιχαήλ Τσιστοζβόνοφ)· παρεκκλήσιο του Αποστόλου Ανδρέα του Πρωτοκλήτου (1997)"],["Μετόχι","παρεκκλήσιο του Αγίου Παντελεήμονος στο Όρενμπουργκ"],["Τυπικό","αυστηρό, κατά το αγιορείτικο πρότυπο· ο κύκλος των ακολουθιών δεν διακόπτεται ποτέ"]]},
+ chron:{
+ ru:[["1990-е","В Оренбурге складывается монашеская община"],["10.09.1996","Общине передан Михаило-Архангельский храм в Андреевке"],["1997","Устроен домовый храм апостола Андрея Первозванного"],["17.07.1998","Синод преобразовал общину в Свято-Андреевский монастырь"]],
+ en:[["1990s","A monastic community forms in Orenburg"],["10.09.1996","The community receives the Archangel Michael church in Andreevka"],["1997","House chapel of the Apostle Andrew the First-Called set up"],["17.07.1998","The Holy Synod makes the community a monastery"]],
+ el:[["1990s","Σχηματίζεται μοναχική αδελφότητα στο Όρενμπουργκ"],["10.09.1996","Παραχωρείται στην αδελφότητα ο ναός του Αρχαγγέλου Μιχαήλ στην Αντρέεφκα"],["1997","Διαμορφώνεται παρεκκλήσιο του Αποστόλου Ανδρέα"],["17.07.1998","Η Ιερά Σύνοδος αναγνωρίζει την αδελφότητα ως μονή"]]},
+ extra:L("Обитель стоит у отрогов Южного Урала, на краю Зилаирского плато, у реки Большой Ик. Братия печёт хлеб, держит огород, при монастыре есть иконописная мастерская и родник на горе. Патриарх Алексий II благословил обитель иконой апостола Андрея. Здание монастыря является памятником областного значения.",
+  "The monastery stands among the foothills of the Southern Urals, at the edge of the Zilair Plateau, by the Bolshoy Ik river. The brethren bake their own bread and keep a kitchen garden; there is an icon-painting workshop and a spring on the hill. Patriarch Alexy II blessed the monastery with an icon of St Andrew. The building is a regional heritage site.",
+  "Η μονή βρίσκεται στους πρόποδες των Νοτίων Ουραλίων, στην άκρη του οροπεδίου Ζιλαΐρ, δίπλα στον ποταμό Μπολσόι Ικ. Οι μοναχοί ψήνουν το ψωμί τους και καλλιεργούν κήπο· υπάρχει εργαστήριο αγιογραφίας και πηγή στον λόφο. Ο Πατριάρχης Αλέξιος Β΄ ευλόγησε τη μονή με εικόνα του Αγίου Ανδρέα. Το κτίριο είναι διατηρητέο μνημείο περιφερειακής σημασίας."),
+ links:[["off",L("Сайт монастыря: андрмонастырь.рф","Monastery website: андрмонастырь.рф","Ιστότοπος μονής: андрмонастырь.рф"),"http://андрмонастырь.рф/"],["off",L("«Монастырский вестник»","Monastery Herald","«Μοναστηριακός Κήρυκας»"),"https://monasterium.ru/monastyri/monastery/andreevskiy-muzhskoy-monastyr-s-andreevka-/"],["off",L("Туристический портал Оренбуржья","Orenburg Region tourism portal","Τουριστική πύλη Όρενμπουργκ"),"https://travel.orb.ru/chem-zanyatsya/attractions/monastyri-i-khramy/svyato-andreevskiy-muzhskoy-monastyr/"],["unoff",L("Урал56: как добраться","Ural56: getting there","Ural56: πώς θα φτάσετε"),"https://www.ural56.ru/news/630069/"],["ph",L("Фото: Наш Урал","Photos: Nash Ural","Φωτογραφίες: Nash Ural"),"https://nashural.ru/dostoprimechatelnosti-urala/orenburgskaya-oblast/svyato-andreevskij-muzhskoj-monastyr-v-andreevke-poistine-zapovednyj-ugolok/"],["ph",L("Фото: Геометки","Photos: Geometki","Φωτογραφίες: Geometki"),"https://geometki.com/places/65cfafbc474ca"]]},
+
+{n:3,cat:"mon",lat:62.5458,lon:113.9673,
+ lab:L("Мирный","Mirny","Μίρνι"),
+ kind:[L("Мужской","Male","Ανδρική"),L("Епархиальный","Diocesan","Επαρχιακή"),{...L("Действующий","Active","Εν λειτουργία"),on:1}],
+ name:L("Андреевский мужской монастырь","St Andrew's Monastery, Mirny","Ανδρική Μονή Αγίου Ανδρέα στο Μίρνι"),
+ place:L("Город Мирный, Республика Саха (Якутия)","Mirny, Republic of Sakha (Yakutia)","Πόλη Μίρνι, Δημοκρατία Σαχά (Γιακουτία)"),
+ facts:{
+ ru:[["Епархия","Якутская (по «Монастырскому вестнику»)"],["Адрес","Мирный, ул. Советская, 19А («Монастырский вестник»); ул. Гагарина, 59 («Азбука паломника»)"],["Наместник","игумен Серафим (Рошка)"],["Главная святыня","Иверская икона Божией Матери, привезённая с Афона"],["Престол","апостола Андрея Первозванного, 13 декабря"]],
+ en:[["Diocese","Yakutsk (per the Monastery Herald)"],["Address","Sovetskaya ul. 19A, Mirny (Monastery Herald); Gagarina ul. 59 (Pilgrim's ABC)"],["Abbot","Hegumen Serafim (Roshka)"],["Main relic","Iveron Icon of the Mother of God, brought from Mount Athos"],["Feast","Apostle Andrew the First-Called, 13 December"]],
+ el:[["Επαρχία","Γιακούτσκ (κατά τον «Μοναστηριακό Κήρυκα»)"],["Διεύθυνση","Sovetskaya ul. 19A, Μίρνι («Μοναστηριακός Κήρυκας»)· Gagarina ul. 59 («Αλφάβητο του προσκυνητή»)"],["Ηγούμενος","Ηγούμενος Σεραφείμ (Ρόσκα)"],["Κύριο κειμήλιο","Εικόνα της Παναγίας Πορταΐτισσας (Ιβήρων), από το Άγιον Όρος"],["Πανήγυρη","Απόστολος Ανδρέας ο Πρωτόκλητος, 13 Δεκεμβρίου"]]},
+ chron:{
+ ru:[["25.12.2014","Учреждён решением Священного Синода"],["20.09.2017","Освящены и подняты купол и крест строящегося братского корпуса"]],
+ en:[["25.12.2014","Established by decision of the Holy Synod"],["20.09.2017","Dome and cross of the new monks' building blessed and raised"]],
+ el:[["25.12.2014","Ιδρύεται με απόφαση της Ιεράς Συνόδου"],["20.09.2017","Ευλογούνται και τοποθετούνται ο τρούλος και ο σταυρός του νέου κελλιού"]]},
+ note:L("Два источника дают разные адреса. Перед поездкой уточните адрес в епархии.","The two sources give different addresses. Confirm with the diocese before visiting.","Οι δύο πηγές δίνουν διαφορετικές διευθύνσεις. Επιβεβαιώστε με την επαρχία πριν από την επίσκεψη."),
+ links:[["off",L("«Монастырский вестник»","Monastery Herald","«Μοναστηριακός Κήρυκας»"),"https://monasterium.ru/monastyri/monastery/andreevskiy-muzhskoy-monastyr-v-g-mirnyy/"],["unoff",L("Азбука паломника","Pilgrim's ABC","«Αλφάβητο του προσκυνητή»"),"https://azbyka.ru/palomnik/Андреевский_мужской_монастырь_(Мирный)"],["unoff",L("Монастыри Якутии","Monasteries of Yakutia","Μονές της Γιακουτίας"),"https://azbyka.ru/palomnik/Республика_Саха_(Якутия)_(монастыри)"]]},
+
+{n:4,cat:"skit",lat:64.9705,lon:35.6534,
+ lab:L("Соловки","Solovki","Σολοβκί"),
+ kind:[L("Пустынь","Hermitage","Ερημητήριο"),L("Соловецкий монастырь","Solovetsky Monastery","Μονή Σολοβέτσκ"),L("Памятник","Heritage site","Μνημείο")],
+ name:L("Андреевская пустынь Соловецкого монастыря","St Andrew's Hermitage of Solovetsky Monastery","Ερημητήριο Αγίου Ανδρέα της Μονής Σολοβέτσκ"),
+ place:L("Остров Большой Заяцкий, Соловецкий архипелаг, Архангельская область","Bolshoy Zayatsky Island, Solovetsky Archipelago, Arkhangelsk Region","Νησί Μπολσόι Ζαγιάτσκι, αρχιπέλαγος Σολοβέτσκ, περιοχή Αρχάγγελσκ"),
+ facts:{
+ ru:[["Принадлежность","Спасо-Преображенский Соловецкий монастырь"],["Храм","деревянная церковь апостола Андрея Первозванного, 1702"],["Как добраться","только катером с Большого Соловецкого острова"],["Рядом","каменные лабиринты и выкладки, древнейшие памятники архипелага"]],
+ en:[["Belongs to","Solovetsky Transfiguration Monastery"],["Church","wooden church of the Apostle Andrew the First-Called, 1702"],["Access","only by boat from Bolshoy Solovetsky Island"],["Nearby","stone labyrinths and cairns, the oldest monuments of the archipelago"]],
+ el:[["Υπάγεται","Μονή Μεταμορφώσεως του Σωτήρος στο Σολοβέτσκ"],["Ναός","ξύλινος ναός του Αποστόλου Ανδρέα του Πρωτοκλήτου, 1702"],["Πρόσβαση","μόνο με σκάφος από το νησί Μπολσόι Σολοβέτσκι"],["Κοντά","πέτρινοι λαβύρινθοι, τα αρχαιότερα μνημεία του αρχιπελάγους"]]},
+ chron:{
+ ru:[["XVI в.","Скит основан при игумене Филиппе, будущем митрополите Московском; считался самым строгим на Соловках"],["1691","На остров перенесена Таборская часовня, поставленная стрельцами в 1670-х"],["1702","Пётр I во второй раз посещает Соловки и велит строить церковь апостола Андрея, покровителя флота"],["30.08.1702","Церковь завершена через две недели после отплытия царя"],["1854–1855","В Крымскую войну пустынь разорена английской эскадрой"]],
+ en:[["16th c.","Founded under Abbot Philip, later Metropolitan of Moscow; considered the strictest skete on Solovki"],["1691","The Tabor chapel, built by streltsy soldiers in the 1670s, is moved to the island"],["1702","Peter the Great visits Solovki for the second time and orders a church to St Andrew, patron of the navy"],["30.08.1702","Church completed two weeks after the tsar sailed away"],["1854–1855","Plundered by a British squadron during the Crimean War"]],
+ el:[["16ος αι.","Ιδρύεται επί ηγουμένου Φιλίππου, μετέπειτα Μητροπολίτη Μόσχας· θεωρούνταν η αυστηρότερη σκήτη των Σολοβκί"],["1691","Μεταφέρεται στο νησί το παρεκκλήσι Ταμπόρ, που έστησαν οι στρελίτσοι τη δεκαετία του 1670"],["1702","Ο Μέγας Πέτρος επισκέπτεται για δεύτερη φορά τα Σολοβκί και διατάζει να χτιστεί ναός του Αγίου Ανδρέα, προστάτη του στόλου"],["30.08.1702","Ο ναός ολοκληρώνεται δύο εβδομάδες μετά την αναχώρηση του τσάρου"],["1854–1855","Λεηλατείται από βρετανική μοίρα στον Κριμαϊκό Πόλεμο"]]},
+ links:[["off",L("Соловецкий монастырь","Solovetsky Monastery","Μονή Σολοβέτσκ"),"https://solovki-monastyr.ru/"],["unoff",L("Рувики","Ruwiki","Ruwiki"),"https://ru.ruwiki.ru/wiki/Андреевский_скит_Соловецкого_монастыря"],["unoff",L("Тонкости туризма","Tonkosti travel guide","Ταξιδιωτικός οδηγός Tonkosti"),"https://tonkosti.ru/Большой_Заяцкий_остров"],["unoff",L("Азбука паломника","Pilgrim's ABC","«Αλφάβητο του προσκυνητή»"),"https://azbyka.ru/palomnik/Андреевская_пустынь_Соловецкого_монастыря"],["ph",L("Фото: sobory.ru","Photos: sobory.ru","Φωτογραφίες: sobory.ru"),"https://sobory.ru/photo/28704"]]},
+
+{n:5,cat:"skit",lat:59.9387,lon:30.7665,
+ lab:L("Агафонов луг","Agafonov Lug","Αγκάφονοφ Λουγκ"),
+ kind:[L("Скит","Skete","Σκήτη"),L("Александро-Невская лавра","Alexander Nevsky Lavra","Λαύρα Αλεξάνδρου Νιέφσκι"),{...L("Действующий","Active","Εν λειτουργία"),on:1}],
+ name:L("Скит апостола Андрея Первозванного на Агафоновом лугу","Skete of the Apostle Andrew the First-Called at Agafonov Lug","Σκήτη του Αποστόλου Ανδρέα του Πρωτοκλήτου στο Αγκάφονοφ Λουγκ"),
+ place:L("У деревни Коркино, Всеволожский район, Ленинградская область","Near Korkino village, Vsevolozhsk District, Leningrad Region","Κοντά στο χωριό Κόρκινο, περιφέρεια Βσεβολόζσκ, περιοχή Λένινγκραντ"),
+ facts:{
+ ru:[["Принадлежность","Свято-Троицкая Александро-Невская лавра"],["Храмы","прпп. Зосимы и Савватия Соловецких (деревянный); апостола Андрея Первозванного (освящён 2022)"],["Начальник скита","схиигумен Варнава (Алешин), по данным 2022 года"],["Память места","«Дорога смерти», по которой в 1941–1943 годах шли к переправе на Невский пятачок"]],
+ en:[["Belongs to","Holy Trinity Alexander Nevsky Lavra"],["Churches","Sts Zosima and Savvaty of Solovki (wooden); Apostle Andrew the First-Called (consecrated 2022)"],["Head of skete","Schema-hegumen Varnava (Alyoshin), as of 2022"],["Site memory","the 'Road of Death' soldiers took in 1941–1943 to the crossing to the Nevsky Pyatachok bridgehead"]],
+ el:[["Υπάγεται","Λαύρα της Αγίας Τριάδος Αλεξάνδρου Νιέφσκι"],["Ναοί","Οσίων Ζωσιμά και Σαββατίου των Σολοβέτσκ (ξύλινος)· Αποστόλου Ανδρέα του Πρωτοκλήτου (εγκαίνια 2022)"],["Προϊστάμενος","Μεγαλόσχημος ηγούμενος Βαρνάβας (Αλιόσιν), στοιχεία 2022"],["Μνήμη του τόπου","ο «Δρόμος του θανάτου» προς το προγεφύρωμα Νιέφσκι Πιατατσόκ, 1941–1943"]]},
+ chron:{
+ ru:[["05.06.1996","Митрополит Иоанн (Снычёв) благословил поставить поклонный крест у древнего валуна"],["1998","Основан как первый скит возрождённой лавры"],["1999","Заложена церковь Зосимы и Савватия"],["27.12.2003","Церковь освящена"],["02.10.2022","Митрополит Варсонофий освятил храм апостола Андрея Первозванного"]],
+ en:[["05.06.1996","Metropolitan Ioann (Snychev) blesses a memorial cross by an ancient boulder"],["1998","Founded as the first skete of the revived Lavra"],["1999","Church of Sts Zosima and Savvaty founded"],["27.12.2003","That church consecrated"],["02.10.2022","Metropolitan Varsonofy consecrates the church of the Apostle Andrew the First-Called"]],
+ el:[["05.06.1996","Ο Μητροπολίτης Ιωάννης (Σνίτσεφ) ευλογεί προσκυνηματικό σταυρό δίπλα σε αρχαίο ογκόλιθο"],["1998","Ιδρύεται ως η πρώτη σκήτη της αναγεννημένης Λαύρας"],["1999","Θεμελιώνεται ο ναός των Οσίων Ζωσιμά και Σαββατίου"],["27.12.2003","Εγκαίνια του ναού"],["02.10.2022","Ο Μητροπολίτης Βαρσανούφιος εγκαινιάζει τον ναό του Αποστόλου Ανδρέα"]]},
+ links:[["off",L("Александро-Невская лавра","Alexander Nevsky Lavra","Λαύρα Αλεξάνδρου Νιέφσκι"),"https://lavra.spb.ru/"],["unoff",L("Азбука паломника","Pilgrim's ABC","«Αλφάβητο του προσκυνητή»"),"https://azbyka.ru/palomnik/Скит_апостола_Андрея_Первозванного_(Агафонов_Луг)"],["ph",L("Фото: sobory.ru","Photos: sobory.ru","Φωτογραφίες: sobory.ru"),"https://sobory.ru/photo/36095"]]},
+
+{n:6,cat:"skit",lat:61.3367,lon:31.0061,
+ lab:L("Валаам","Valaam","Βαλαάμ"),
+ kind:[L("Скит","Skete","Σκήτη"),L("Валаамский монастырь","Valaam Monastery","Μονή Βαλαάμ")],
+ name:L("Скит апостола Андрея Первозванного Валаамского монастыря","Skete of the Apostle Andrew the First-Called, Valaam","Σκήτη του Αποστόλου Ανδρέα του Πρωτοκλήτου της Μονής Βαλαάμ"),
+ place:L("Валаамский архипелаг, Республика Карелия","Valaam Archipelago, Republic of Karelia","Αρχιπέλαγος Βαλαάμ, Δημοκρατία της Καρελίας"),
+ facts:{
+ ru:[["Принадлежность","Спасо-Преображенский Валаамский ставропигиальный монастырь"],["Престол","апостола Андрея Первозванного, 13 декабря"]],
+ en:[["Belongs to","Valaam Transfiguration Stauropegial Monastery"],["Feast","Apostle Andrew the First-Called, 13 December"]],
+ el:[["Υπάγεται","Σταυροπηγιακή Μονή Μεταμορφώσεως του Βαλαάμ"],["Πανήγυρη","Απόστολος Ανδρέας ο Πρωτόκλητος, 13 Δεκεμβρίου"]]},
+ extra:L("Валаамское предание связывает начало христианства на Ладоге с апостолом Андреем: по нему, апостол прошёл здесь и водрузил крест. Поэтому почитание Первозванного на Валааме особое.",
+  "Valaam tradition links the beginning of Christianity on Lake Ladoga with St Andrew: according to it, the apostle passed this way and raised a cross. This is why he is especially venerated on Valaam.",
+  "Η παράδοση του Βαλαάμ συνδέει την αρχή του Χριστιανισμού στη λίμνη Λάντογκα με τον Απόστολο Ανδρέα: κατ' αυτήν, ο απόστολος πέρασε από εδώ και ύψωσε σταυρό. Γι' αυτό ο Πρωτόκλητος τιμάται ιδιαίτερα στο Βαλαάμ."),
+ note:L("Подробная история скита в открытых источниках, доступных при составлении свода, не найдена. Карточка содержит только подтверждённые сведения из «Азбуки паломника»; уточнить их можно на сайте монастыря.",
+  "A detailed history of the skete was not found in the open sources available when this directory was compiled. The card contains only facts confirmed by the Pilgrim's ABC; check the monastery's website for more.",
+  "Λεπτομερής ιστορία της σκήτης δεν βρέθηκε στις διαθέσιμες ανοιχτές πηγές. Η κάρτα περιέχει μόνο στοιχεία επιβεβαιωμένα από το «Αλφάβητο του προσκυνητή»· περισσότερα στον ιστότοπο της μονής."),
+ links:[["off",L("Валаамский монастырь: скиты","Valaam Monastery: sketes","Μονή Βαλαάμ: σκήτες"),"https://valaam.ru/monastery/87690/"],["unoff",L("Азбука паломника","Pilgrim's ABC","«Αλφάβητο του προσκυνητή»"),"https://azbyka.ru/palomnik/Скит_апостола_Андрея_Первозванного_Валаамского_монастыря"],["ph",L("Фото Валаама: sobory.ru","Photos of Valaam: sobory.ru","Φωτογραφίες Βαλαάμ: sobory.ru"),"https://sobory.ru/photo/231481"]]},
+
+{n:7,cat:"mon",lat:48.43,lon:39.22,approx:true,
+ lab:L("Первозвановка","Pervozvanovka","Περβοζβάνοφκα"),
+ kind:[L("Мужской","Male","Ανδρική"),L("Епархиальный","Diocesan","Επαρχιακή"),{...L("Спорная территория","Disputed territory","Αμφισβητούμενη περιοχή"),hist:1}],
+ name:L("Свято-Андреевский мужской монастырь","Holy St Andrew's Monastery, Pervozvanovka","Ιερά Ανδρική Μονή Αγίου Ανδρέα στην Περβοζβάνοφκα"),
+ place:L("Село Первозвановка, Лутугинский район, Луганская область","Pervozvanovka village, Lutugino District, Luhansk Region","Χωριό Περβοζβάνοφκα, περιφέρεια Λουτούγκινο, περιοχή Λουγκάνσκ"),
+ facts:{
+ ru:[["Епархия","Ровеньковская (по справочнику РПЦ); ранее Луганская и Старобельская епархия УПЦ"],["Адрес","с. Первозвановка, ул. Ленина, 33"],["Наместник","архимандрит Андрей (Нагибин)"],["Храм","апостола Андрея Первозванного, каменный, 1893"]],
+ en:[["Diocese","Rovenki (per the Russian Orthodox Church directory); formerly Luhansk and Starobilsk Diocese of the UOC"],["Address","Lenina ul. 33, Pervozvanovka"],["Abbot","Archimandrite Andrei (Nagibin)"],["Church","Apostle Andrew the First-Called, stone, 1893"]],
+ el:[["Επαρχία","Ροβένκι (κατά τον κατάλογο της Ρωσικής Εκκλησίας)· παλαιότερα Επαρχία Λουγκάνσκ και Σταρομπίλσκ της ΟΕΟΥ"],["Διεύθυνση","Lenina ul. 33, Περβοζβάνοφκα"],["Ηγούμενος","Αρχιμανδρίτης Ανδρέας (Ναγκίμπιν)"],["Ναός","Αποστόλου Ανδρέα του Πρωτοκλήτου, λίθινος, 1893"]]},
+ chron:{
+ ru:[["1893","Построен приходской храм по почину священника Иоанна Кияницы, при участии землевладельца Е. М. Духовского"],["1997","При храме учреждён монастырь"],["к 2001","Устроен келейный корпус"]],
+ en:[["1893","Parish church built on the initiative of Fr Ioann Kiyanitsa, with landowner E. M. Dukhovskoy"],["1997","Monastery established at the church"],["by 2001","Monks' cell building completed"]],
+ el:[["1893","Χτίζεται ο ενοριακός ναός με πρωτοβουλία του ιερέα Ιωάννη Κιγιανίτσα και τη συνδρομή του γαιοκτήμονα Ε. Μ. Ντουχόφσκοϊ"],["1997","Ιδρύεται μονή στον ναό"],["έως 2001","Ολοκληρώνεται κτίριο κελλιών"]]},
+ note:L("Луганская область включена Россией в свой состав в 2022 году; большинство государств это не признаёт. Монастырь приведён в своде, потому что числится в справочнике монастырей Русской Церкви, и отмечен отдельно.",
+  "Russia declared Luhansk Region part of its territory in 2022; most states do not recognise this. The monastery is listed because it appears in the Russian Orthodox Church's directory of monasteries, and it is marked separately.",
+  "Η Ρωσία ανακήρυξε την περιοχή Λουγκάνσκ μέρος της επικράτειάς της το 2022· τα περισσότερα κράτη δεν το αναγνωρίζουν. Η μονή περιλαμβάνεται επειδή καταγράφεται στον κατάλογο μονών της Ρωσικής Εκκλησίας και σημειώνεται χωριστά."),
+ links:[["off",L("«Монастырский вестник»","Monastery Herald","«Μοναστηριακός Κήρυκας»"),"https://www.monasterium.ru/monastyri/monastery/svyato-andreevskiy-muzhskoy-monastyr-s-pervozvanovka-rovenkovskoy-eparkhii/"],["unoff",L("Православная энциклопедия","Orthodox Encyclopedia","Ορθόδοξη Εγκυκλοπαίδεια"),"https://www.pravenc.ru/text/115366.html"],["unoff",L("Азбука паломника","Pilgrim's ABC","«Αλφάβητο του προσκυνητή»"),"https://azbyka.ru/palomnik/Свято-Андреевский_мужской_монастырь_(Первозвановка)"]]},
+
+{n:8,cat:"hist",lat:59.9334,lon:30.3728,
+ lab:L("Петербург","St Petersburg","Αγ. Πετρούπολη"),
+ kind:[L("Подворье","Metochion","Μετόχι"),{...L("Исторический","Historic","Ιστορικό"),hist:1}],
+ name:L("Подворье Старо-Афонского Свято-Андреевского скита","Metochion of St Andrew's Skete of Mount Athos","Μετόχι της Σκήτης του Αγίου Ανδρέα του Αγίου Όρους"),
+ place:L("Санкт-Петербург, 5-я Советская ул., 33 / Дегтярная ул., 16","St Petersburg, 5th Sovetskaya ul. 33 / Degtyarnaya ul. 16","Αγία Πετρούπολη, 5η Sovetskaya ul. 33 / Degtyarnaya ul. 16"),
+ facts:{
+ ru:[["Постройка","1889–1893, архитектор Н. Н. Никонов, неорусский стиль"],["Храм","Благовещения Пресвятой Богородицы; правый придел апостола Андрея Первозванного и мц. Феклы"],["Святыня","икона Божией Матери «В скорбях и печалех Утешение», привезённая с Афона"],["Сейчас","архиерейское подворье Санкт-Петербургской епархии"]],
+ en:[["Built","1889–1893, architect N. N. Nikonov, Russian Revival style"],["Church","Annunciation of the Mother of God; right-hand chapel of the Apostle Andrew the First-Called and St Thecla"],["Relic","the icon of the Mother of God 'Consolation in Sorrows and Afflictions', brought from Athos"],["Today","bishop's metochion of the St Petersburg Diocese"]],
+ el:[["Ανέγερση","1889–1893, αρχιτέκτονας Ν. Ν. Νίκονοφ, νεορωσικός ρυθμός"],["Ναός","Ευαγγελισμού της Θεοτόκου· δεξί παρεκκλήσι του Αποστόλου Ανδρέα και της Αγίας Θέκλας"],["Κειμήλιο","η εικόνα της Θεοτόκου «Παρηγορία στις θλίψεις και τις λύπες», από το Άγιον Όρος"],["Σήμερα","επισκοπικό μετόχι της Επαρχίας Αγίας Πετρούπολης"]]},
+ chron:{
+ ru:[["1861","С Афона привезена чудотворная икона; Синод тогда не разрешил устроить подворье"],["19.01.1892","Освящён придел апостола Андрея Первозванного"],["1893","Завершено строительство"]],
+ en:[["1861","The wonder-working icon is brought from Athos; the Synod refuses permission for a metochion at that time"],["19.01.1892","Chapel of the Apostle Andrew the First-Called consecrated"],["1893","Construction completed"]],
+ el:[["1861","Η θαυματουργή εικόνα φέρεται από το Άγιον Όρος· η Σύνοδος τότε δεν επιτρέπει μετόχι"],["19.01.1892","Εγκαίνια του παρεκκλησίου του Αποστόλου Ανδρέα"],["1893","Ολοκληρώνεται η ανέγερση"]]},
+ extra:L("Подворье принадлежало русскому Андреевскому скиту на Афоне, крупнейшей русской обители Святой Горы в начале XX века. Подворья скита были также в Ростове-на-Дону, Таганроге, Одессе и Константинополе.",
+  "The metochion belonged to the Russian St Andrew's Skete on Mount Athos, the largest Russian community on the Holy Mountain in the early 20th century. The skete also had metochia in Rostov-on-Don, Taganrog, Odesa and Constantinople.",
+  "Το μετόχι ανήκε στη ρωσική Σκήτη του Αγίου Ανδρέα στο Άγιον Όρος, τη μεγαλύτερη ρωσική κοινότητα του Όρους στις αρχές του 20ού αιώνα. Η σκήτη είχε μετόχια και στο Ροστόφ-ον-Ντον, το Ταγκανρόγκ, την Οδησσό και την Κωνσταντινούπολη."),
+ links:[["unoff",L("Азбука паломника","Pilgrim's ABC","«Αλφάβητο του προσκυνητή»"),"https://azbyka.ru/palomnik/Архиерейское_подворье_Храма_Благовещения_Пресвятой_Богородицы_(Санкт-Петербург)"],["unoff",L("М. В. Шкаровский, «Русские обители Афона»","M. V. Shkarovsky, Russian Monasteries of Athos","Μ. Β. Σκαρόφσκι, «Ρωσικές μονές του Άθω»"),"https://azbyka.ru/otechnik/Istorija_Tserkvi/russkie-obiteli-afona-i-elladskaja-tserkov-v-20-veke/3"],["ph",L("Фото: Citywalls","Photos: Citywalls","Φωτογραφίες: Citywalls"),"https://www.citywalls.ru/photo479382.html"]]}
+];
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const saltire=`<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="2" y="2" width="96" height="96" fill="none" stroke="var(--saltire)" stroke-width="3"/><path d="M14 6 L50 42 L86 6 L94 14 L58 50 L94 86 L86 94 L50 58 L14 94 L6 86 L42 50 L6 14Z" fill="var(--saltire)"/></svg>`;
+let lang="ru",filter="all";
+
+function dms(v,s){const a=Math.abs(v),d=Math.floor(a),m=Math.round((a-d)*60);return `${d}°${String(m).padStart(2,"0")}′ ${s}`}
+function card(d,t){
+  const tags=d.kind.map(k=>`<span class="tag ${k.on?"on":""} ${k.hist?"hist":""}">${esc(k[lang])}</span>`).join("");
+  const facts=d.facts[lang].map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+  const chron=d.chron?`<ol class="chron">${d.chron[lang].map(([y,x])=>`<li><span class="y">${esc(y)}</span><span>${esc(x)}</span></li>`).join("")}</ol>`:"";
+  const links=d.links.map(([c,l,u])=>`<a class="${c}" href="${esc(u)}" target="_blank" rel="noopener">${esc(l[lang])}</a>`).join("");
+  return `<article class="card" data-cat="${d.cat}" id="o${d.n}" ${filter==="all"||filter===d.cat?"":"hidden"}>
+   <div class="side"><div class="num">${d.n}</div>${saltire}<div class="coords">${dms(d.lat,t.N)}<br>${dms(d.lon,t.E)}${d.approx?"<br>≈":""}</div></div>
+   <div class="body"><div class="kind">${tags}</div><h3>${esc(d.name[lang])}</h3><p class="place">${esc(d.place[lang])}</p>
+   <dl class="facts">${facts}</dl>${d.extra?`<p class="extra-p">${esc(d.extra[lang])}</p>`:""}${chron}${d.note?`<p class="note">${esc(d.note[lang])}</p>`:""}
+   <div class="links"><span>${esc(t.linksH)}</span>${links}</div></div></article>`;
+}
+function drawMap(t){
+  const svg=document.getElementById("map"),L0=70,R=870,T=20,B=350;
+  const x=lon=>L0+(lon-24)/(120-24)*(R-L0), y=lat=>T+(70-lat)/(70-44)*(B-T);
+  let s="";
+  for(let lat=45;lat<=70;lat+=5){s+=`<line x1="${L0}" x2="${R}" y1="${y(lat)}" y2="${y(lat)}" stroke="var(--line)" stroke-width="1"/><text x="${L0-6}" y="${y(lat)+4}" text-anchor="end" font-family="PT Mono,monospace" font-size="11" fill="var(--muted)">${lat}°</text>`}
+  for(let lon=30;lon<=120;lon+=10){s+=`<line y1="${T}" y2="${B}" x1="${x(lon)}" x2="${x(lon)}" stroke="var(--line)" stroke-width="1"/><text x="${x(lon)}" y="${B+18}" text-anchor="middle" font-family="PT Mono,monospace" font-size="11" fill="var(--muted)">${lon}°</text>`}
+  s+=`<line x1="${L0}" x2="${R}" y1="${y(66.56)}" y2="${y(66.56)}" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1"/><text x="${x(68)}" y="${y(66.8)}" font-family="Alegreya Sans,sans-serif" font-size="12" fill="var(--muted)" font-style="italic">${esc(t.arctic)}</text>`;
+  const off={1:[14,4],2:[14,4],3:[-12,4],4:[14,4],5:[14,16],6:[14,-2],7:[14,4],8:[-12,4]};
+  DATA.forEach(d=>{
+    const ox=d.n===8?-14:0,oy=d.n===8?14:0,tx=x(d.lon),ty=y(d.lat),cx=tx+ox,cy=ty+oy,[dx,dy]=off[d.n],c=d.cat==="hist"?"var(--gold)":"var(--saltire)";
+    if(ox)s+=`<line x1="${tx}" y1="${ty}" x2="${cx}" y2="${cy}" stroke="var(--muted)" stroke-width="1"/><circle cx="${tx}" cy="${ty}" r="2" fill="var(--muted)"/>`;
+    s+=`<a href="#o${d.n}"><circle cx="${cx}" cy="${cy}" r="9" fill="${c}"/><text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="PT Mono,monospace" font-size="11" fill="var(--paper)">${d.n}</text><text x="${cx+dx}" y="${cy+dy}" text-anchor="${dx<0?"end":"start"}" font-family="Alegreya Sans,sans-serif" font-size="13" fill="var(--ink)">${esc(d.lab[lang])}</text></a>`;
+  });
+  svg.innerHTML=s; svg.setAttribute("aria-label",t.mapAria);
+}
+function render(){
+  const t=UI[lang];
+  document.documentElement.lang=lang; document.title=t.title;
+  document.querySelectorAll("[data-i]").forEach(e=>{e.textContent=t[e.dataset.i]});
+  document.getElementById("exList").innerHTML=t.ex.map(x=>`<li>${esc(x)}</li>`).join("");
+  document.getElementById("list").innerHTML=DATA.map(d=>card(d,t)).join("");
+  drawMap(t);
+  document.querySelectorAll(".lang").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
+}
+document.querySelectorAll(".lang").forEach(b=>b.addEventListener("click",()=>{
+  lang=b.dataset.l; try{localStorage.setItem("andr-lang",lang)}catch(e){}
+  try{history.replaceState(null,"","#"+lang)}catch(e){}
+  render();
+}));
+document.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
+  filter=b.dataset.f;
+  document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  document.querySelectorAll(".card").forEach(c=>c.hidden=!(filter==="all"||c.dataset.cat===filter));
+}));
+(function init(){
+  const h=(location.hash||"").slice(1);
+  if(UI[h])lang=h; else { try{const s=localStorage.getItem("andr-lang"); if(UI[s])lang=s}catch(e){} }
+  render();
+})();
+</script>
+
+</body>
+</html>
