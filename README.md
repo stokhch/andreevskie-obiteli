@@ -4,4 +4,4 @@
 
 Monasteries of St Andrew the First-Called in Russia · Μονές του Αγίου Ανδρέα του Πρωτοκλήτου στη Ρωσία
 
-Сайт: https://stokhch.github.io/andreevskie-obiteli/
+Сайт: https://stokhch.github.io/st-andrew-ru/
