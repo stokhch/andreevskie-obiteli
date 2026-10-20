@@ -84,6 +84,19 @@ dl.facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .nophoto p{margin:0 0 6px;color:var(--muted)}
 .np-links{display:flex;flex-wrap:wrap;gap:4px 16px}
 @media (max-width:620px){.gallery.multi{grid-template-columns:1fr}}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ch-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:16px 0 4px}
+.ch-controls input,.ch-controls select{font:400 16px var(--f-body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 12px;width:100%;min-width:0}
+.ch-controls input:focus-visible,.ch-controls select:focus-visible{outline:2px solid var(--saltire);outline-offset:1px}
+.ch-count{font-family:var(--f-data);font-size:13px;color:var(--muted);margin:12px 0 8px}
+.ch-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px;border-top:1px solid var(--line)}
+.ch-list li{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);min-width:0}
+.ch-list .ty{font-family:var(--f-data);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--saltire);min-width:7.5em}
+.ch-list .ty.cath{color:var(--gold)}
+.ch-list .pl{font-size:16px;overflow-wrap:anywhere;min-width:0}
+.ch-list .rg{grid-column:2;font-size:13.5px;color:var(--muted)}
+.ch-links{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14.5px;margin:6px 0 0}
+@media (max-width:620px){.ch-controls{grid-template-columns:1fr}.ch-list{grid-template-columns:1fr}}
 .extra-p{margin:0 0 14px;max-width:62ch}
 .chron{list-style:none;padding:0;margin:0 0 14px;border-left:2px solid var(--saltire-soft)}
 .chron li{display:grid;grid-template-columns:5.2em 1fr;gap:10px;padding:3px 0 3px 12px;font-size:15.5px}
@@ -118,7 +131,6 @@ footer{margin-top:36px;font-size:13px;color:var(--muted);border-top:1px solid va
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-
 <div class="wrap">
 <div class="langbar" role="group" aria-label="Language">
   <button class="lang" id="l-ru" data-l="ru" aria-pressed="true">RU</button>
@@ -154,6 +166,27 @@ footer{margin-top:36px;font-size:13px;color:var(--muted);border-top:1px solid va
   </div>
   <div class="legend"><span data-i="lg1"></span><span data-i="lg2"></span><span data-i="lg3"></span></div>
   <div class="list" id="list"></div>
+</section>
+
+<section aria-labelledby="ch-h">
+  <h2 id="ch-h" data-i="chH"></h2>
+  <p class="sub" data-i="chSub"></p>
+  <div class="ch-controls">
+    <label class="vh" for="ch-q" data-i="chSearchL"></label>
+    <input id="ch-q" type="search" autocomplete="off">
+    <label class="vh" for="ch-r" data-i="chRegionL"></label>
+    <select id="ch-r"></select>
+  </div>
+  <div class="filters" role="group">
+    <button class="chip" id="t-all" data-t="all" aria-pressed="true" data-i="tAll"></button>
+    <button class="chip" id="t-s" data-t="s" aria-pressed="false" data-i="tS"></button>
+    <button class="chip" id="t-c" data-t="c" aria-pressed="false" data-i="tC"></button>
+    <button class="chip" id="t-h" data-t="h" aria-pressed="false" data-i="tH"></button>
+  </div>
+  <p class="ch-count" id="ch-count" aria-live="polite"></p>
+  <ul class="ch-list" id="ch-list"></ul>
+  <p class="map-note" data-i="chNote"></p>
+  <p class="ch-links"><a href="https://sobory.ru/mapsearch/?altar=28" target="_blank" rel="noopener" data-i="chCat1"></a> <a href="https://azbyka.ru/palomnik/Андрей_Первозванный,_апостол" target="_blank" rel="noopener" data-i="chCat2"></a></p>
 </section>
 
 <section aria-labelledby="ex-h">
@@ -201,10 +234,10 @@ ru:{title:"Андреевские обители России",eyebrow:"Свод
  listH:"Обители",fAll:"Все",fMon:"Монастыри",fSkit:"Скиты и пустыни",fHist:"Исторические",
  lg1:"● официальный источник",lg2:"○ неофициальный / справочный",lg3:"▣ фотогалерея",linksH:"Источники и фото",
  exH:"Что не вошло в свод",exP:"Свод включает только обители, у которых Андрей Первозванный в имени или в главном посвящении. Не включены:",
- ex:["монастыри иного посвящения, где есть отдельный Андреевский храм (например, надвратная церковь Андрея Первозванного Благовещенского монастыря в Нижнем Новгороде);","приходские храмы и соборы апостола Андрея, которых по России несколько сотен («Народный каталог православной архитектуры» насчитывает их свыше 330);","зарубежные обители: русский Андреевский скит на Афоне (с 1992 года греческий) и его подворья в Стамбуле и Одессе."],
+ ex:["монастыри иного посвящения, где есть отдельный Андреевский храм (например, надвратная церковь Андрея Первозванного Благовещенского монастыря в Нижнем Новгороде);","храмы, где апостол Андрей почитается только в приделе, и полный реестр приходских храмов: их по России несколько сотен («Народный каталог православной архитектуры» насчитывает свыше 330 записей);","зарубежные обители: русский Андреевский скит на Афоне (с 1992 года греческий) и его подворья в Стамбуле и Одессе."],
  srcH:"Источники",srcSub:"Источники русскоязычные; названия даны в оригинале.",
  footer:"Сведения о настоятелях, адресах и телефонах меняются; перед поездкой сверяйтесь с официальным сайтом обители или епархии. Фотографии подключены с Wikimedia Commons под свободными лицензиями; автор и условия указаны на странице каждого файла. Остальные снимки принадлежат их авторам и доступны по ссылкам «▣».",
- N:"с.ш.",E:"в.д.",noPhoto:"Свободных фотографий этой обители в открытых источниках не нашлось. Снимки можно посмотреть по ссылкам ниже.",photoCredit:"Wikimedia Commons · автор и лицензия",photoBlocked:"Фото не загрузилось здесь; откройте его на Wikimedia Commons",morePhotos:"Ещё фото на Wikimedia Commons"},
+ N:"с.ш.",E:"в.д.",chH:"Храмы и церкви",chSub:"Приходские храмы, соборы и часовни во имя апостола Андрея Первозванного в России. Это выборка, а не полный реестр.",chSearchL:"Поиск по населённому пункту",chRegionL:"Регион",chSearch:"Найти населённый пункт",allRegions:"Все регионы",tAll:"Все",tS:"Соборы",tC:"Церкви",tH:"Часовни",tyS:"Собор",tyCS:"Кафедральный собор",tyC:"Церковь",tyH:"Часовня",chShown:"Показано {n} из {m}",chNone:"Ничего не найдено.",chNote:"Не включены храмы, где Андрей Первозванный только в приделе. Отдельные регионы (в основном с названиями от «С» до «Я») представлены неполно: в них попали только храмы из второго справочника.",chCat1:"Каталог на Sobory.ru ↗",chCat2:"Азбука паломника ↗",noPhoto:"Свободных фотографий этой обители в открытых источниках не нашлось. Снимки можно посмотреть по ссылкам ниже.",photoCredit:"Wikimedia Commons · автор и лицензия",photoBlocked:"Фото не загрузилось здесь; откройте его на Wikimedia Commons",morePhotos:"Ещё фото на Wikimedia Commons"},
 en:{title:"Monasteries of St Andrew in Russia",eyebrow:"Directory · feast 30 November / 13 December",h1:"Monasteries of St Andrew in Russia",
  lede:"Monasteries, sketes and hermitages dedicated to the Apostle Andrew the First-Called or bearing his name. Compiled from church directories, the monasteries' own websites, the Orthodox Encyclopedia and travel guides. Current as of October 2026.",
  st1:"active monasteries",st2:"sketes and hermitages",st3:"historic metochion",
@@ -213,10 +246,10 @@ en:{title:"Monasteries of St Andrew in Russia",eyebrow:"Directory · feast 30 No
  listH:"Monasteries",fAll:"All",fMon:"Monasteries",fSkit:"Sketes and hermitages",fHist:"Historic",
  lg1:"● official source",lg2:"○ unofficial / reference",lg3:"▣ photo gallery",linksH:"Sources and photos",
  exH:"Not included",exP:"The directory lists only communities whose name or main dedication is to St Andrew the First-Called. Not included:",
- ex:["monasteries with another dedication that contain a separate church of St Andrew (for example, the gate church of the Annunciation Monastery in Nizhny Novgorod);","parish churches and cathedrals of St Andrew, of which Russia has several hundred (the People's Catalogue of Orthodox Architecture lists more than 330);","communities abroad: the Russian St Andrew's Skete on Mount Athos (Greek since 1992) and its metochia in Istanbul and Odesa."],
+ ex:["monasteries with another dedication that contain a separate church of St Andrew (for example, the gate church of the Annunciation Monastery in Nizhny Novgorod);","churches where St Andrew is honoured only in a side chapel, and a full register of parish churches, of which Russia has several hundred (the People's Catalogue of Orthodox Architecture lists more than 330 entries);","communities abroad: the Russian St Andrew's Skete on Mount Athos (Greek since 1992) and its metochia in Istanbul and Odesa."],
  srcH:"Sources",srcSub:"All sources are in Russian; titles are given in the original.",
  footer:"Abbots, addresses and phone numbers change; check the monastery's or diocese's official website before a visit. Photos are shown from Wikimedia Commons under free licences; the author and terms are on each file's page. Other photos belong to their authors and are linked under ▣.",
- N:"N",E:"E",noPhoto:"No freely licensed photos of this site were found in open sources. See the photo links below.",photoCredit:"Wikimedia Commons · author and licence",photoBlocked:"The photo could not load here; open it on Wikimedia Commons",morePhotos:"More photos on Wikimedia Commons"},
+ N:"N",E:"E",chH:"Churches and cathedrals",chSub:"Parish churches, cathedrals and chapels dedicated to the Apostle Andrew the First-Called in Russia. This is a selection, not a complete register.",chSearchL:"Search by place",chRegionL:"Region",chSearch:"Search by place",allRegions:"All regions",tAll:"All",tS:"Cathedrals",tC:"Churches",tH:"Chapels",tyS:"Cathedral",tyCS:"Diocesan cathedral",tyC:"Church",tyH:"Chapel",chShown:"Showing {n} of {m}",chNone:"Nothing found.",chNote:"Churches where St Andrew has only a side chapel are not included. Some regions (mostly those alphabetically from S to Y) are covered only partly, from a second directory.",chCat1:"Catalogue on Sobory.ru ↗",chCat2:"Pilgrim's ABC ↗",noPhoto:"No freely licensed photos of this site were found in open sources. See the photo links below.",photoCredit:"Wikimedia Commons · author and licence",photoBlocked:"The photo could not load here; open it on Wikimedia Commons",morePhotos:"More photos on Wikimedia Commons"},
 el:{title:"Μονές του Αγίου Ανδρέα στη Ρωσία",eyebrow:"Κατάλογος · μνήμη 30 Νοεμβρίου / 13 Δεκεμβρίου",h1:"Μονές του Αγίου Ανδρέα στη Ρωσία",
  lede:"Μονές, σκήτες και ερημητήρια αφιερωμένα στον Απόστολο Ανδρέα τον Πρωτόκλητο ή που φέρουν το όνομά του. Τα στοιχεία προέρχονται από εκκλησιαστικούς καταλόγους, τους επίσημους ιστότοπους των μονών, την Ορθόδοξη Εγκυκλοπαίδεια και ταξιδιωτικούς οδηγούς. Ενημέρωση: Οκτώβριος 2026.",
  st1:"εν λειτουργία μονές",st2:"σκήτες και ερημητήρια",st3:"ιστορικό μετόχι",
@@ -225,10 +258,10 @@ el:{title:"Μονές του Αγίου Ανδρέα στη Ρωσία",eyebrow:
  listH:"Μονές",fAll:"Όλες",fMon:"Μονές",fSkit:"Σκήτες και ερημητήρια",fHist:"Ιστορικά",
  lg1:"● επίσημη πηγή",lg2:"○ ανεπίσημη / βοηθητική",lg3:"▣ φωτογραφίες",linksH:"Πηγές και φωτογραφίες",
  exH:"Τι δεν περιλαμβάνεται",exP:"Ο κατάλογος περιλαμβάνει μόνο μονές που φέρουν το όνομα του Αγίου Ανδρέα ή είναι κυρίως αφιερωμένες σε αυτόν. Δεν περιλαμβάνονται:",
- ex:["μονές με άλλη αφιέρωση που έχουν ξεχωριστό ναό του Αγίου Ανδρέα (π.χ. ο ναός πάνω από την πύλη της Μονής του Ευαγγελισμού στο Νίζνι Νόβγκοροντ)·","ενοριακοί ναοί και καθεδρικοί του Αποστόλου Ανδρέα, που στη Ρωσία είναι εκατοντάδες (ο Λαϊκός Κατάλογος Ορθόδοξης Αρχιτεκτονικής καταγράφει πάνω από 330)·","μονές στο εξωτερικό: η ρωσική Σκήτη του Αγίου Ανδρέα στο Άγιον Όρος (ελληνική από το 1992) και τα μετόχιά της στην Κωνσταντινούπολη και την Οδησσό."],
+ ex:["μονές με άλλη αφιέρωση που έχουν ξεχωριστό ναό του Αγίου Ανδρέα (π.χ. ο ναός πάνω από την πύλη της Μονής του Ευαγγελισμού στο Νίζνι Νόβγκοροντ)·","ναοί όπου ο Άγιος Ανδρέας τιμάται μόνο σε παρεκκλήσι, και πλήρες μητρώο ενοριακών ναών, που στη Ρωσία είναι εκατοντάδες (ο Λαϊκός Κατάλογος Ορθόδοξης Αρχιτεκτονικής καταγράφει πάνω από 330 εγγραφές)·","μονές στο εξωτερικό: η ρωσική Σκήτη του Αγίου Ανδρέα στο Άγιον Όρος (ελληνική από το 1992) και τα μετόχιά της στην Κωνσταντινούπολη και την Οδησσό."],
  srcH:"Πηγές",srcSub:"Όλες οι πηγές είναι στα ρωσικά· οι τίτλοι δίνονται στο πρωτότυπο.",
  footer:"Τα στοιχεία για ηγουμένους, διευθύνσεις και τηλέφωνα αλλάζουν· πριν από την επίσκεψη ελέγξτε τον επίσημο ιστότοπο της μονής ή της επαρχίας. Οι φωτογραφίες προέρχονται από το Wikimedia Commons με ελεύθερες άδειες· ο δημιουργός και οι όροι αναγράφονται στη σελίδα κάθε αρχείου. Άλλες φωτογραφίες ανήκουν στους δημιουργούς τους και παρατίθενται ως σύνδεσμοι ▣.",
- N:"Β",E:"Α",noPhoto:"Δεν βρέθηκαν ελεύθερες φωτογραφίες αυτής της μονής σε ανοιχτές πηγές. Δείτε τους συνδέσμους φωτογραφιών παρακάτω.",photoCredit:"Wikimedia Commons · δημιουργός και άδεια",photoBlocked:"Η φωτογραφία δεν φορτώθηκε εδώ· ανοίξτε τη στο Wikimedia Commons",morePhotos:"Περισσότερες φωτογραφίες στο Wikimedia Commons"}
+ N:"Β",E:"Α",chH:"Ναοί και καθεδρικοί",chSub:"Ενοριακοί ναοί, καθεδρικοί και παρεκκλήσια αφιερωμένα στον Απόστολο Ανδρέα τον Πρωτόκλητο στη Ρωσία. Είναι επιλογή, όχι πλήρες μητρώο.",chSearchL:"Αναζήτηση ανά τόπο",chRegionL:"Περιοχή",chSearch:"Αναζήτηση ανά τόπο",allRegions:"Όλες οι περιοχές",tAll:"Όλοι",tS:"Καθεδρικοί",tC:"Ναοί",tH:"Παρεκκλήσια",tyS:"Καθεδρικός",tyCS:"Καθεδρικός ναός",tyC:"Ναός",tyH:"Παρεκκλήσι",chShown:"Εμφανίζονται {n} από {m}",chNone:"Δεν βρέθηκε τίποτα.",chNote:"Δεν περιλαμβάνονται ναοί όπου ο Άγιος Ανδρέας έχει μόνο παρεκκλήσι. Ορισμένες περιοχές (κυρίως από το «Σ» έως το «Υ» στα ρωσικά) καλύπτονται μόνο εν μέρει, από δεύτερο κατάλογο.",chCat1:"Κατάλογος στο Sobory.ru ↗",chCat2:"«Αλφάβητο του προσκυνητή» ↗",noPhoto:"Δεν βρέθηκαν ελεύθερες φωτογραφίες αυτής της μονής σε ανοιχτές πηγές. Δείτε τους συνδέσμους φωτογραφιών παρακάτω.",photoCredit:"Wikimedia Commons · δημιουργός και άδεια",photoBlocked:"Η φωτογραφία δεν φορτώθηκε εδώ· ανοίξτε τη στο Wikimedia Commons",morePhotos:"Περισσότερες φωτογραφίες στο Wikimedia Commons"}
 };
 
 const L=(ru,en,el)=>({ru,en,el});
@@ -416,6 +449,7 @@ function render(){
   document.getElementById("exList").innerHTML=t.ex.map(x=>`<li>${esc(x)}</li>`).join("");
   document.getElementById("list").innerHTML=DATA.map(d=>card(d,t)).join("");
   drawMap(t);
+  renderChurches();
   document.querySelectorAll(".lang").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===lang));
 }
 document.querySelectorAll(".lang").forEach(b=>b.addEventListener("click",()=>{
@@ -427,6 +461,41 @@ document.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{
   filter=b.dataset.f;
   document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));
   document.querySelectorAll(".card").forEach(c=>c.hidden=!(filter==="all"||c.dataset.cat===filter));
+}));
+
+const CH=[["c","Барнаул","Алтайский край"],["c","Сковородино","Амурская область"],["c","Астрахань","Астраханская область"],["c","Айдар","Белгородская область"],["h","Красная Яруга","Белгородская область"],["c","Андреево","Владимирская область"],["c","Андреевское","Владимирская область"],["c","Андреевский погост (Киржачский район)","Владимирская область"],["h","Куделино","Владимирская область"],["c","Муром","Владимирская область"],["c","Красноярский","Волгоградская область"],["c","Воронеж","Воронежская область"],["h","Воронеж","Воронежская область"],["c","Новая Чара","Забайкальский край"],["c","Чита","Забайкальский край"],["c","Мангут","Забайкальский край"],["c","Харагун","Забайкальский край"],["c","Калининград","Калининградская область"],["c","Залесье","Калининградская область"],["c","Зеленоградск","Калининградская область"],["c","Дуркино","Калужская область"],["h","Озеро","Калужская область"],["c","Андреевское (Калуга)","Калужская область"],["c","Вилючинск","Камчатский край"],["c","Андреевка (Кемеровский район)","Кемеровская область"],["c","Яшкино","Кемеровская область"],["c","Мыски","Кемеровская область"],["h","Мундыбаш","Кемеровская область"],["h","Андреевский (Уржумский район)","Кировская область"],["h","Большое Андрейково","Костромская область"],["s","Геленджик","Краснодарский край"],["c","Новотитаровская","Краснодарский край"],["c","Тбилисская","Краснодарский край"],["c","Новомихайловский","Краснодарский край"],["c","Сочи (Заречный)","Краснодарский край"],["c","Краснодар","Краснодарский край"],["h","Архипо-Осиповка","Краснодарский край"],["h","Тамань","Краснодарский край"],["c","Канск","Красноярский край"],["c","Красноярск","Красноярский край"],["c","Лесосибирск","Красноярский край"],["h","Ильино","Курганская область"],["h","Велеша","Ленинградская область"],["s","Волхов","Ленинградская область"],["c","Красная Заря","Ленинградская область"],["c","Замостье","Ленинградская область"],["h","Келло","Ленинградская область"],["h","Приладожское","Ленинградская область"],["c","Васильево (на Вуоксе)","Ленинградская область"],["c","Ненимяки","Ленинградская область"],["h","Нюкля","Магаданская область"],["h","Сергиев Посад","Московская область"],["c","Федюково","Московская область"],["h","Андреевское (Ленинский округ)","Московская область"],["S","Североморск","Мурманская область"],["c","Кировск","Мурманская область"],["h","Полуостров Средний","Мурманская область"],["c","Гаджиево","Мурманская область"],["c","Селянцево","Нижегородская область"],["c","Арзамас","Нижегородская область"],["c","Грузино","Новгородская область"],["s","Грузино","Новгородская область"],["c","Новосибирск","Новосибирская область"],["S","Карасук","Новосибирская область"],["c","Москаленский","Омская область"],["c","Хабарное","Оренбургская область"],["c","Сахзаводской","Орловская область"],["h","Шаблыкино","Орловская область"],["c","Пенза","Пензенская область"],["c","Суда","Пермский край"],["c","Сёла","Пермский край"],["c","Пермь","Пермский край"],["c","Фокино","Приморский край"],["c","Ивановка","Приморский край"],["c","Владивосток","Приморский край"],["c","Хвалынка","Приморский край"],["c","Уссурийск","Приморский край"],["h","Элекмонар","Республика Алтай"],["h","Рублевка","Республика Алтай"],["c","Туймазы","Республика Башкортостан"],["c","Уфа (Дёма)","Республика Башкортостан"],["c","Гремячинск","Республика Бурятия"],["c","Усть-Баргузин","Республика Бурятия"],["c","Тарумовка","Республика Дагестан"],["s","Буйнакск","Республика Дагестан"],["c","Нижняя Теберда","Республика Карачаево-Черкесия"],["c","Миша-Яг (Печора)","Республика Коми"],["c","Керчь","Республика Крым"],["c","Генеральское","Республика Крым"],["c","Новоозёрное","Республика Крым"],["c","Симферополь","Республика Крым"],["c","Приветное","Республика Крым"],["c","Восход","Республика Крым"],["c","Весёлое","Республика Крым"],["h","Керчь","Республика Крым"],["S","Атяшево","Республика Мордовия"],["h","Кобан","Республика Северная Осетия-Алания"],["c","Зеленодольск","Республика Татарстан"],["h","Караульная Гора","Республика Татарстан"],["c","Казань","Республика Татарстан"],["c","Глухово","Республика Татарстан"],["c","Бирюлинский зверосовхоз","Республика Татарстан"],["c","Табар-Черки","Республика Татарстан"],["c","Борок","Республика Татарстан"],["c","Андреевцы","Республика Удмуртия"],["c","Уйвай","Республика Удмуртия"],["c","Большая Пудга","Республика Удмуртия"],["c","Каменск-Шахтинский","Ростовская область"],["c","Миллерово","Ростовская область"],["c","Жуково-Татарский","Ростовская область"],["c","Красный Сулин","Ростовская область"],["c","Ростов-на-Дону","Ростовская область"],["h","Мясной","Рязанская область"],["s","Санкт-Петербург (Васильевский остров)","Санкт-Петербург"],["c","Санкт-Петербург (Военно-морская академия)","Санкт-Петербург"],["c","Петергоф","Санкт-Петербург"],["c","Кача","Севастополь"],["c","Бухта Омега","Севастополь"],["c","Шаля","Свердловская область"],["c","Лобва","Свердловская область"],["s","Ставрополь","Ставропольский край"],["c","Ясенское","Тверская область"],["c","Барыбинка","Тульская область"],["c","Тобольск","Тюменская область"],["c","Ульяновск","Ульяновская область"],["c","Поливаново","Ульяновская область"],["c","Лазарцево","Ярославская область"],["c","Люблино","Москва"],["c","Метрогородок","Москва"],["c","Птичное","Москва"],["c","Рублёво","Москва"],["c","Ваганьковское кладбище","Москва"]];
+const REG={"Алтайский край":["Altai Krai","Επικράτεια Αλτάι"],"Амурская область":["Amur Region","Περιοχή Αμούρ"],"Астраханская область":["Astrakhan Region","Περιοχή Αστραχάν"],"Белгородская область":["Belgorod Region","Περιοχή Μπέλγκοροντ"],"Владимирская область":["Vladimir Region","Περιοχή Βλαδίμηρ"],"Волгоградская область":["Volgograd Region","Περιοχή Βόλγκογκραντ"],"Воронежская область":["Voronezh Region","Περιοχή Βορόνεζ"],"Забайкальский край":["Zabaykalsky Krai","Επικράτεια Υπερβαϊκαλίας"],"Калининградская область":["Kaliningrad Region","Περιοχή Καλίνινγκραντ"],"Калужская область":["Kaluga Region","Περιοχή Καλούγκα"],"Камчатский край":["Kamchatka Krai","Επικράτεια Καμτσάτκα"],"Кемеровская область":["Kemerovo Region","Περιοχή Κεμέροβο"],"Кировская область":["Kirov Region","Περιοχή Κίροβ"],"Костромская область":["Kostroma Region","Περιοχή Κοστρομά"],"Краснодарский край":["Krasnodar Krai","Επικράτεια Κρασνοντάρ"],"Красноярский край":["Krasnoyarsk Krai","Επικράτεια Κρασνογιάρσκ"],"Курганская область":["Kurgan Region","Περιοχή Κούργκαν"],"Ленинградская область":["Leningrad Region","Περιοχή Λένινγκραντ"],"Магаданская область":["Magadan Region","Περιοχή Μαγκαντάν"],"Московская область":["Moscow Region","Περιοχή Μόσχας"],"Мурманская область":["Murmansk Region","Περιοχή Μούρμανσκ"],"Нижегородская область":["Nizhny Novgorod Region","Περιοχή Νίζνι Νόβγκοροντ"],"Новгородская область":["Novgorod Region","Περιοχή Νόβγκοροντ"],"Новосибирская область":["Novosibirsk Region","Περιοχή Νοβοσιμπίρσκ"],"Омская область":["Omsk Region","Περιοχή Ομσκ"],"Оренбургская область":["Orenburg Region","Περιοχή Όρενμπουργκ"],"Орловская область":["Oryol Region","Περιοχή Ορέλ"],"Пензенская область":["Penza Region","Περιοχή Πένζα"],"Пермский край":["Perm Krai","Επικράτεια Περμ"],"Приморский край":["Primorsky Krai","Επικράτεια Πριμόριε"],"Республика Алтай":["Altai Republic","Δημοκρατία Αλτάι"],"Республика Башкортостан":["Bashkortostan","Μπασκορτοστάν"],"Республика Бурятия":["Buryatia","Μπουριατία"],"Республика Дагестан":["Dagestan","Νταγκεστάν"],"Республика Карачаево-Черкесия":["Karachay-Cherkessia","Καραχάι-Τσερκεσία"],"Республика Коми":["Komi Republic","Δημοκρατία Κόμι"],"Республика Крым":["Crimea","Κριμαία"],"Республика Мордовия":["Mordovia","Μορδοβία"],"Республика Северная Осетия-Алания":["North Ossetia–Alania","Βόρεια Οσετία–Αλανία"],"Республика Татарстан":["Tatarstan","Ταταρστάν"],"Республика Удмуртия":["Udmurtia","Ουντμουρτία"],"Ростовская область":["Rostov Region","Περιοχή Ροστόφ"],"Рязанская область":["Ryazan Region","Περιοχή Ριαζάν"],"Москва":["Moscow","Μόσχα"],"Санкт-Петербург":["St Petersburg","Αγία Πετρούπολη"],"Севастополь":["Sevastopol","Σεβαστούπολη"],"Свердловская область":["Sverdlovsk Region","Περιοχή Σβερντλόφσκ"],"Ставропольский край":["Stavropol Krai","Επικράτεια Σταυρούπολης"],"Тверская область":["Tver Region","Περιοχή Τβερ"],"Тульская область":["Tula Region","Περιοχή Τούλα"],"Тюменская область":["Tyumen Region","Περιοχή Τιουμέν"],"Ульяновская область":["Ulyanovsk Region","Περιοχή Ουλιάνοβσκ"],"Ярославская область":["Yaroslavl Region","Περιοχή Γιαροσλάβλ"]};
+const TR={"а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ё":"e","ж":"zh","з":"z","и":"i","й":"y","к":"k","л":"l","м":"m","н":"n","о":"o","п":"p","р":"r","с":"s","т":"t","у":"u","ф":"f","х":"kh","ц":"ts","ч":"ch","ш":"sh","щ":"shch","ъ":"","ы":"y","ь":"","э":"e","ю":"yu","я":"ya"};
+function translit(t){return t.replace(/[А-Яа-яЁё]/g,c=>{const l=c.toLowerCase(),r=TR[l]||"";return c===l?r:r.charAt(0).toUpperCase()+r.slice(1)})}
+let chType="all";
+function renderChurches(){
+  const t=UI[lang],q=document.getElementById("ch-q"),sel=document.getElementById("ch-r");
+  const cur=sel.value||"";
+  const nm=r=>lang==="ru"?r:REG[r][lang==="en"?0:1];
+  const regs=[...new Set(CH.map(r=>r[2]))].sort((a,b)=>nm(a).localeCompare(nm(b),lang));
+  sel.innerHTML=`<option value="">${esc(t.allRegions)}</option>`+regs.map(r=>`<option value="${esc(r)}"${r===cur?" selected":""}>${esc(lang==="ru"?r:REG[r][lang==="en"?0:1])}</option>`).join("");
+  q.placeholder=t.chSearch;
+  const term=q.value.trim().toLowerCase(),reg=sel.value;
+  const rows=CH.filter(([ty,pl,rg])=>{
+    const k=ty.toLowerCase();
+    if(chType!=="all"&&k!==chType)return false;
+    if(reg&&rg!==reg)return false;
+    if(term&&!(pl.toLowerCase().includes(term)||translit(pl).toLowerCase().includes(term)))return false;
+    return true;
+  });
+  document.getElementById("ch-count").textContent=t.chShown.replace("{n}",rows.length).replace("{m}",CH.length);
+  document.getElementById("ch-list").innerHTML=rows.length?rows.map(([ty,pl,rg])=>{
+    const k=ty.toLowerCase(),lab=ty==="S"?t.tyCS:k==="s"?t.tyS:k==="h"?t.tyH:t.tyC;
+    const place=lang==="ru"?pl:translit(pl),region=lang==="ru"?rg:REG[rg][lang==="en"?0:1];
+    return `<li><span class="ty ${k==="s"?"cath":""}">${esc(lab)}</span><span class="pl">${esc(place)}</span><span class="rg">${esc(region)}</span></li>`;
+  }).join(""):`<li style="grid-column:1/-1;display:block">${esc(t.chNone)}</li>`;
+}
+document.getElementById("ch-q").addEventListener("input",renderChurches);
+document.getElementById("ch-r").addEventListener("change",renderChurches);
+document.querySelectorAll("[data-t]").forEach(b=>b.addEventListener("click",()=>{
+  chType=b.dataset.t;
+  document.querySelectorAll("[data-t]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  renderChurches();
 }));
 (function init(){
   const h=(location.hash||"").slice(1);
