@@ -135,7 +135,36 @@ footer{margin-top:36px;font-size:13px;color:var(--muted);border-top:1px solid va
   dl.facts{grid-template-columns:1fr;gap:0}
   dl.facts dd{margin-bottom:6px}
 }
-@media (prefers-reduced-motion:no-preference){.card{transition:border-color .2s}.card:hover{border-color:var(--saltire)}}
+
+/* золотые акценты */
+:root{--gold-hi:#d9b04a;--gold-soft:#f6ecd3}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--gold-soft:#2b2412}}
+:root[data-theme="dark"]{--gold-soft:#2b2412}
+header.top{border-bottom:0;position:relative}
+header.top::after,footer::before{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--gold) 0,var(--gold-hi) 35%,var(--gold) 70%,transparent);border-radius:2px}
+header.top::after{position:absolute;left:0;right:0;bottom:0}
+footer{border-top:0;position:relative;padding-top:0}
+footer::before{margin-bottom:14px;height:2px}
+.eyebrow{color:var(--gold)}
+h2{position:relative;padding-bottom:10px}
+h2::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold-hi))}
+.stats b{color:var(--gold)}
+.stats div:first-child b,.stats div:nth-child(2) b{color:var(--saltire)}
+.card{border-top:3px solid var(--gold)}
+.card .side{background:linear-gradient(180deg,var(--gold-soft),var(--saltire-soft) 70%)}
+.num{color:var(--gold)}
+.card h3{position:relative}
+.chip[aria-pressed="true"]{background:var(--saltire);border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft),0 0 0 3px var(--gold)}
+.lang[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft),0 0 0 3px var(--gold)}
+.chron{border-left-color:var(--gold-hi)}
+.chron .y{color:var(--gold)}
+.extra{border-top:3px solid var(--gold)}
+.ch-list li:hover{background:var(--gold-soft)}
+.ch-count{color:var(--gold)}
+.src li::marker{color:var(--gold)}
+a:hover{color:var(--gold)}
+.ph-frame{box-shadow:0 0 0 1px var(--gold-hi)}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .2s}.card:hover{border-color:var(--saltire);border-top-color:var(--gold-hi)}}
 </style>
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
