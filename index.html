@@ -48,6 +48,8 @@ h2{font-size:30px}
 .sub{color:var(--muted);margin:6px 0 16px;max-width:62ch}
 .mapbox{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
 .mapbox svg{display:block;width:100%;min-width:560px;height:auto}
+.mapbox{position:relative}.mp-dot{cursor:pointer}.mp-dot:hover .dv{r:4;fill-opacity:1}
+#mp-tip{position:absolute;z-index:5;pointer-events:none;background:var(--ink);color:var(--paper);font:500 13.5px var(--f-body);padding:5px 9px;border-radius:4px;max-width:260px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .mp-tog{display:inline-flex;gap:8px;align-items:center;font-size:15px;margin:0 0 10px;cursor:pointer}
 .map-note{font-size:13px;color:var(--muted);margin-top:8px}
 
@@ -155,7 +157,7 @@ footer{margin-top:36px;font-size:13px;color:var(--muted);border-top:1px solid va
   <h2 id="map-h" data-i="mapH"></h2>
   <p class="sub" data-i="mapSub"></p>
   <label class="mp-tog"><input type="checkbox" id="mp-ch" checked> <span data-i="mapChT"></span></label>
-  <div class="mapbox"><svg id="map" viewBox="0 0 900 380" role="img"></svg></div>
+  <div class="mapbox" id="mapbox"><svg id="map" viewBox="0 0 900 380" role="img"></svg></div>
   <p class="map-note" data-i="mapNote"></p>
 </section>
 
@@ -440,12 +442,13 @@ function drawMap(t){
   const seas=[[L("Баренцево море","Barents Sea","Θάλασσα Μπάρεντς"),39,72.0],[L("Белое м.","White Sea","Λευκή Θάλασσα"),38,66.0],[L("Балтийское море","Baltic Sea","Βαλτική"),19.9,57.6],[L("Чёрное море","Black Sea","Μαύρη Θάλασσα"),32,43.6],[L("Каспийское м.","Caspian Sea","Κασπία"),49.6,42.8],[L("Карское море","Kara Sea","Θάλασσα Κάρα"),68,71.3],[L("Японское море","Sea of Japan","Θάλασσα της Ιαπωνίας"),132,42.6]];
   seas.forEach(([n,lo,la])=>{if(la<=70&&la>=42)s+=`<text x="${x(lo)}" y="${y(la)}" font-family="Alegreya Sans,sans-serif" font-size="12" font-style="italic" fill="var(--saltire)" fill-opacity=".8">${esc(n[lang])}</text>`});
   if(showCh){const seen={};CH.forEach(([ty,pl,rg],i)=>{const [la,lo]=CHC[i];if(lo>135||lo<19)return;const key=la+","+lo,n=seen[key]=(seen[key]||0)+1,a=n*2.4,r=n>1?(n-1)*3:0;
-    s+=`<circle cx="${x(lo)+Math.cos(a)*r}" cy="${y(la)+Math.sin(a)*r}" r="2.6" fill="var(--gold)" fill-opacity=".75" stroke="var(--paper)" stroke-width=".6"><title>${esc(lang==="ru"?pl:translit(pl))}</title></circle>`});}
+    const cx=x(lo)+Math.cos(a)*r,cy=y(la)+Math.sin(a)*r,tp=ty==="S"?t.tyCS:ty==="s"?t.tyS:ty==="h"?t.tyH:t.tyC,nm=lang==="ru"?pl:translit(pl),rn=lang==="ru"?rg:REG[rg][lang==="en"?0:1];
+    s+=`<g class="mp-dot" data-tip="${esc(nm+" · "+tp+" · "+rn)}"><circle cx="${cx}" cy="${cy}" r="7" fill="transparent"/><circle class="dv" cx="${cx}" cy="${cy}" r="2.6" fill="var(--gold)" fill-opacity=".8" stroke="var(--paper)" stroke-width=".6"/></g>`});}
   const off={1:[14,4],2:[14,4],3:[-12,4],4:[14,4],5:[14,16],6:[14,-2],7:[14,4],8:[-12,4]};
   DATA.forEach(d=>{
     const ox=d.n===8?-14:0,oy=d.n===8?14:0,tx=x(d.lon),ty=y(d.lat),cx=tx+ox,cy=ty+oy,[dx,dy]=off[d.n],c=d.cat==="hist"?"var(--gold)":"var(--saltire)";
     if(ox)s+=`<line x1="${tx}" y1="${ty}" x2="${cx}" y2="${cy}" stroke="var(--muted)" stroke-width="1"/><circle cx="${tx}" cy="${ty}" r="2" fill="var(--muted)"/>`;
-    s+=`<a href="#o${d.n}"><circle cx="${cx}" cy="${cy}" r="9" fill="${c}"/><text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="PT Mono,monospace" font-size="11" fill="var(--paper)">${d.n}</text><text x="${cx+dx}" y="${cy+dy}" text-anchor="${dx<0?"end":"start"}" font-family="Alegreya Sans,sans-serif" font-size="13" fill="var(--ink)">${esc(d.lab[lang])}</text></a>`;
+    s+=`<a href="#o${d.n}" class="mp-dot" data-tip="${esc(d.name[lang])}"><circle cx="${cx}" cy="${cy}" r="9" fill="${c}"/><text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="PT Mono,monospace" font-size="11" fill="var(--paper)">${d.n}</text><text x="${cx+dx}" y="${cy+dy}" text-anchor="${dx<0?"end":"start"}" font-family="Alegreya Sans,sans-serif" font-size="13" fill="var(--ink)">${esc(d.lab[lang])}</text></a>`;
   });
   svg.innerHTML=s; svg.setAttribute("aria-label",t.mapAria);
 }
@@ -507,6 +510,12 @@ document.querySelectorAll("[data-t]").forEach(b=>b.addEventListener("click",()=>
   document.querySelectorAll("[data-t]").forEach(x=>x.setAttribute("aria-pressed",x===b));
   renderChurches();
 }));
+
+(function(){const box=document.getElementById("mapbox"),tip=document.createElement("div");tip.id="mp-tip";tip.hidden=true;box.appendChild(tip);
+ const show=(e)=>{const g=e.target.closest&&e.target.closest(".mp-dot");if(!g){tip.hidden=true;return}
+  tip.textContent=g.dataset.tip;tip.hidden=false;const b=box.getBoundingClientRect(),w=tip.offsetWidth;
+  let l=e.clientX-b.left+box.scrollLeft+12,tp=e.clientY-b.top-34;if(l+w>box.clientWidth+box.scrollLeft-4)l=e.clientX-b.left+box.scrollLeft-w-12;if(tp<2)tp=e.clientY-b.top+14;tip.style.left=l+"px";tip.style.top=tp+"px"};
+ box.addEventListener("mousemove",show);box.addEventListener("click",show);box.addEventListener("mouseleave",()=>{tip.hidden=true});})();
 (function init(){
   const h=(location.hash||"").slice(1);
   if(UI[h])lang=h; else { try{const s=localStorage.getItem("andr-lang"); if(UI[s])lang=s}catch(e){} }
